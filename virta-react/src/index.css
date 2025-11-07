@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes cell-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+}
+
+.animate-cell-ripple {
+  animation: cell-ripple var(--duration) ease-out var(--delay) forwards;
+  animation-fill-mode: none;
+}

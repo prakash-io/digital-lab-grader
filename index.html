@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VirTA - Virtual Teaching Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Background Ripple Effect -->
+        <div id="backgroundRipple" class="background-ripple"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1 class="main-title">
+                Welcome to <span class="highlight-text">VirTA</span>
+            </h1>
+            <p class="subtitle">
+                Your Virtual Teaching Assistant for an enhanced learning experience.
+            </p>
+            
+            <!-- Swipe Area / Login Cards -->
+            <div class="button-container">
+                <div id="waitingState" class="waiting-state">
+                    <p>Swipe up with two fingers to continue</p>
+                </div>
+                
+                <div id="backdrop" class="backdrop hidden"></div>
+                
+                <div id="loginCards" class="login-cards hidden">
+                    <a href="signup.html" class="login-card university-card">
+                        <div class="card-icon">🏛️</div>
+                        <span class="card-title">University Login</span>
+                        <span class="card-subtitle">Access as institution</span>
+                    </a>
+                    <a href="signup.html" class="login-card student-card">
+                        <div class="card-icon">🎓</div>
+                        <span class="card-title">Student Login</span>
+                        <span class="card-subtitle">Access as student</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
