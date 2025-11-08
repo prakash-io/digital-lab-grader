@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Sidebar, SidebarBody, SidebarLink } from "../components/ui/sidebar";
-import { HoverEffect } from "../components/ui/card-hover-effect";
+import { Card, CardTitle, CardDescription } from "../components/ui/card-hover-effect";
 import {
   IconArrowLeft,
   IconBrandTabler,
@@ -12,7 +12,6 @@ import {
   IconFileText,
   IconCode,
   IconTrophy,
-  IconChartBar,
   IconBell,
 } from "@tabler/icons-react";
 import { NotificationButton } from "../components/NotificationButton";
@@ -182,36 +181,29 @@ export default function Dashboard() {
     },
   ];
 
-  const dashboardCards = [
-    {
+  const dashboardCards = {
+    assignments: {
       title: "Assignments",
       description:
         "View and manage your assignments. Submit your work, track deadlines, and check feedback from instructors.",
       link: "/student-assignments",
       icon: <IconFileText className="w-12 h-12" />,
     },
-    {
+    codeEditor: {
       title: "Code Editor",
       description:
         "Write, edit, and test your code in a powerful online IDE. Supports multiple programming languages with syntax highlighting and debugging tools.",
       link: "/code-editor",
       icon: <IconCode className="w-12 h-12" />,
     },
-    {
+    leaderboard: {
       title: "Leaderboard",
       description:
         "See where you rank among your peers. Track your progress and compete with others in various challenges and competitions.",
       link: "/leaderboard",
       icon: <IconTrophy className="w-12 h-12" />,
     },
-    {
-      title: "Analytics",
-      description:
-        "View detailed analytics about your performance, learning progress, and activity statistics. Understand your strengths and areas for improvement.",
-      link: "#",
-      icon: <IconChartBar className="w-12 h-12" />,
-    },
-  ];
+  };
 
   return (
     <div
@@ -252,6 +244,26 @@ export default function Dashboard() {
 }
 
 const DashboardContent = ({ firstName, cards }) => {
+  const renderCard = (cardData, isFullWidth = false) => {
+    const isExternal = cardData?.link?.startsWith("http") || cardData?.link === "#";
+    const Component = isExternal ? "a" : Link;
+    const props = isExternal 
+      ? { href: cardData?.link }
+      : { to: cardData?.link };
+
+    return (
+      <Component
+        {...props}
+        className="relative group block p-3 h-full w-full"
+      >
+        <Card icon={cardData.icon}>
+          <CardTitle>{cardData.title}</CardTitle>
+          <CardDescription>{cardData.description}</CardDescription>
+        </Card>
+      </Component>
+    );
+  };
+
   return (
     <div className="flex flex-1">
       <div className="flex h-full w-full flex-1 flex-col overflow-y-auto rounded-tl-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
@@ -264,7 +276,18 @@ const DashboardContent = ({ firstName, cards }) => {
 
         {/* Body section with lighter background */}
         <div className="flex-1 bg-neutral-50/50 dark:bg-neutral-900/30 p-6 md:p-10">
-          <HoverEffect items={cards} className="py-4" />
+          <div className="max-w-7xl mx-auto w-full py-4">
+            {/* First row - Assignments card full width */}
+            <div className="mb-6">
+              {renderCard(cards.assignments, true)}
+            </div>
+            
+            {/* Second row - Code Editor and Leaderboard side by side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {renderCard(cards.codeEditor)}
+              {renderCard(cards.leaderboard)}
+            </div>
+          </div>
         </div>
       </div>
     </div>
