@@ -8,6 +8,10 @@ import {
   IconShoppingBag,
   IconTrophy,
   IconInfoCircle,
+  IconMail,
+  IconPhone,
+  IconMapPin,
+  IconX,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
@@ -102,6 +106,12 @@ export default function About() {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
   const [open, setOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
   const handleLogout = () => {
     logout();
@@ -146,6 +156,14 @@ export default function About() {
       onClick: handleLogout,
     },
   ];
+
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission (you can integrate with a backend API here)
+    alert("Thank you! Your message has been sent.");
+    setFormData({ name: "", email: "", message: "" });
+    setContactModalOpen(false);
+  };
 
   if (!isAuthenticated) {
     navigate("/signup");
@@ -265,6 +283,203 @@ export default function About() {
           </div>
         </div>
       </div>
+
+      {/* Floating Contact Us Button */}
+      <button
+        onClick={() => setContactModalOpen(true)}
+        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-purple-500 to-pink-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center gap-2 group"
+        aria-label="Contact Us"
+      >
+        <IconMail className="w-6 h-6" />
+        <span className="hidden md:inline-block font-semibold">Contact Us</span>
+      </button>
+
+      {/* Contact Modal */}
+      {contactModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={() => setContactModalOpen(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white dark:bg-neutral-800 px-6 py-4 border-b border-purple-200 dark:border-purple-800 flex items-center justify-between rounded-t-2xl">
+              <h2 className="text-2xl font-bold text-purple-700 dark:text-purple-300">
+                Contact Us
+              </h2>
+              <button
+                onClick={() => setContactModalOpen(false)}
+                className="p-2 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+                aria-label="Close"
+              >
+                <IconX className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              <div className="mb-6 text-center">
+                <p className="text-gray-700 dark:text-gray-300">
+                  We'd love to hear from you! Whether it's feedback, questions, or collaboration ideas — reach out below.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Contact Form */}
+                <div className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg border border-purple-200 dark:border-purple-800">
+                  <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-4">
+                    Get in Touch
+                  </h3>
+                  <form onSubmit={handleContactSubmit} className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      >
+                        Name
+                      </label>
+                      <input
+                        id="name"
+                        type="text"
+                        required
+                        placeholder="Your name"
+                        value={formData.name}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
+                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      >
+                        Email
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        required
+                        placeholder="you@example.com"
+                        value={formData.email}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
+                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="message"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      >
+                        Message
+                      </label>
+                      <textarea
+                        id="message"
+                        rows="5"
+                        placeholder="Your message..."
+                        value={formData.message}
+                        onChange={(e) =>
+                          setFormData({ ...formData, message: e.target.value })
+                        }
+                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-purple-400 hover:to-pink-400 transition-all shadow-md"
+                    >
+                      Send Message
+                    </button>
+                  </form>
+                </div>
+
+                {/* Contact Information */}
+                <div className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg border border-purple-200 dark:border-purple-800">
+                  <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-4">
+                    Contact Information
+                  </h3>
+                  <div className="space-y-4 mb-4">
+                    <div className="flex items-start gap-3">
+                      <IconMail className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Email:
+                        </p>
+                        <a
+                          href="mailto:Prakash01022005@gmail.com"
+                          className="text-purple-600 dark:text-purple-400 hover:underline"
+                        >
+                          Prakash01022005@gmail.com
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <IconPhone className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Phone:
+                        </p>
+                        <a
+                          href="tel:+917061603061"
+                          className="text-purple-600 dark:text-purple-400 hover:underline"
+                        >
+                          +91 7061603061
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <IconMapPin className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Address:
+                        </p>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          Hostel square, IIIT Bhubaneswar
+                          <br />
+                          Bhubaneswar, India
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Google Maps */}
+                  <div className="mt-4">
+                    <iframe
+                      src="https://maps.google.com/maps?q=IIIT%20Bhubaneswar&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                      width="100%"
+                      height="200"
+                      className="rounded-lg border border-purple-200 dark:border-purple-800"
+                      style={{ border: "none" }}
+                      loading="lazy"
+                      title="IIIT Bhubaneswar Location"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-white dark:bg-neutral-800 px-6 py-4 border-t border-purple-200 dark:border-purple-800 text-center rounded-b-2xl">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                © 2025 Virta. All rights reserved.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
