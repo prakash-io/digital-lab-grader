@@ -319,11 +319,13 @@ export default function StudentAssignments() {
                           key={index}
                           className="mb-2 p-3 bg-purple-50 dark:bg-purple-900/20 rounded border border-purple-200 dark:border-purple-800"
                         >
-                          <div className="text-sm text-gray-800 dark:text-white">
-                            <strong>Input:</strong> {testCase.input}
+                          <div className="text-sm text-gray-800 dark:text-white mb-1">
+                            <strong>Input:</strong>
+                            <pre className="mt-1 p-2 bg-white dark:bg-neutral-700 rounded text-xs whitespace-pre-wrap font-mono">{testCase.input}</pre>
                           </div>
                           <div className="text-sm text-gray-800 dark:text-white">
-                            <strong>Expected Output:</strong> {testCase.expectedOutput}
+                            <strong>Expected Output:</strong>
+                            <pre className="mt-1 p-2 bg-white dark:bg-neutral-700 rounded text-xs whitespace-pre-wrap font-mono">{testCase.expectedOutput}</pre>
                           </div>
                         </div>
                       ))}
