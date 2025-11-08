@@ -749,43 +749,45 @@ export default function TeacherAssignments() {
                   No assignments created yet. Create your first assignment!
                 </div>
               ) : (
-                assignments.map((assignment) => (
-                  <div
-                    key={assignment.id}
-                    onClick={() => handleEditAssignment(assignment)}
-                    className="bg-white dark:bg-neutral-800 rounded-lg border border-purple-200 dark:border-purple-800 p-6 cursor-pointer hover:border-purple-400 dark:hover:border-purple-600 transition-colors hover:shadow-lg"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-2">
-                          {assignment.title}
-                        </h3>
-                        <div className="text-purple-600 dark:text-purple-400 mb-4 line-clamp-2 whitespace-pre-wrap">
-                          {assignment.description}
+                assignments
+                  .filter((assignment) => assignment.id !== editingAssignmentId)
+                  .map((assignment) => (
+                    <div
+                      key={assignment.id}
+                      onClick={() => handleEditAssignment(assignment)}
+                      className="bg-white dark:bg-neutral-800 rounded-lg border border-purple-200 dark:border-purple-800 p-6 cursor-pointer hover:border-purple-400 dark:hover:border-purple-600 transition-colors hover:shadow-lg"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-2">
+                            {assignment.title}
+                          </h3>
+                          <div className="text-purple-600 dark:text-purple-400 mb-4 line-clamp-2 whitespace-pre-wrap">
+                            {assignment.description}
+                          </div>
+                          <div className="text-sm text-purple-500 dark:text-purple-500">
+                            Created: {new Date(assignment.createdAt).toLocaleDateString()}
+                            {assignment.dueDate && (
+                              <span className="ml-4">
+                                Due: {new Date(assignment.dueDate).toLocaleDateString()}
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-2 flex gap-4 text-sm text-purple-500 dark:text-purple-500">
+                            <span>Languages: {assignment.languages?.join(", ") || "N/A"}</span>
+                            <span>Time Limit: {assignment.timeLimit || 5000}ms</span>
+                            <span>Memory: {assignment.memoryLimit || 256}MB</span>
+                          </div>
+                          <div className="mt-2 text-sm text-purple-500 dark:text-purple-500">
+                            Public Tests: {assignment.publicTestCases?.length || 0} | Hidden Tests: {assignment.hiddenTestCases?.length || 0}
+                          </div>
                         </div>
-                        <div className="text-sm text-purple-500 dark:text-purple-500">
-                          Created: {new Date(assignment.createdAt).toLocaleDateString()}
-                          {assignment.dueDate && (
-                            <span className="ml-4">
-                              Due: {new Date(assignment.dueDate).toLocaleDateString()}
-                            </span>
-                          )}
+                        <div className="ml-4 text-purple-600 dark:text-purple-400 flex-shrink-0">
+                          <IconEdit className="w-5 h-5" />
                         </div>
-                        <div className="mt-2 flex gap-4 text-sm text-purple-500 dark:text-purple-500">
-                          <span>Languages: {assignment.languages?.join(", ") || "N/A"}</span>
-                          <span>Time Limit: {assignment.timeLimit || 5000}ms</span>
-                          <span>Memory: {assignment.memoryLimit || 256}MB</span>
-                        </div>
-                        <div className="mt-2 text-sm text-purple-500 dark:text-purple-500">
-                          Public Tests: {assignment.publicTestCases?.length || 0} | Hidden Tests: {assignment.hiddenTestCases?.length || 0}
-                        </div>
-                      </div>
-                      <div className="ml-4 text-purple-600 dark:text-purple-400 flex-shrink-0">
-                        <IconEdit className="w-5 h-5" />
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))
               )}
             </div>
           </div>
