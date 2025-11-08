@@ -48,6 +48,7 @@ router.post("/signup", async (req, res) => {
       email,
       password: hashedPassword,
       userType: finalUserType,
+      score: 0, // Initial score is 0
       createdAt: new Date().toISOString(),
     };
 

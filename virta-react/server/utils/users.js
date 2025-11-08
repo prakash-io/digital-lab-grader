@@ -55,3 +55,25 @@ export function findUserById(id) {
   return users.find((user) => user.id === id);
 }
 
+// Update user
+export function updateUser(userId, updates) {
+  try {
+    const users = readUsers();
+    const userIndex = users.findIndex((u) => u.id === userId);
+    if (userIndex === -1) {
+      return false;
+    }
+    users[userIndex] = { ...users[userIndex], ...updates };
+    writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    return true;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return false;
+  }
+}
+
+// Get all users
+export function getAllUsers() {
+  return readUsers();
+}
+

@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import { mkdirSync } from "fs";
+import { readUsers } from "./users.js";
 
 const DATA_DIR = join(__dirname, "../data");
 
@@ -261,5 +262,62 @@ export function getGradesByAssignment(assignmentId) {
 export function getGradesByStudent(studentId) {
   const grades = readGrades();
   return grades.filter((g) => g.studentId === studentId);
+}
+
+// Leaderboard - Update user score for an assignment
+export function updateUserScoreForAssignment(studentId, assignmentId, score) {
+  const users = readUsers();
+  const userIndex = users.findIndex((u) => u.id === studentId);
+  
+  if (userIndex === -1) {
+    console.warn(`User ${studentId} not found for score update`);
+    return false;
+  }
+
+  // Initialize assignmentScores if it doesn't exist
+  if (!users[userIndex].assignmentScores) {
+    users[userIndex].assignmentScores = {};
+  }
+
+  // Get previous score for this assignment (if any)
+  const previousScore = users[userIndex].assignmentScores[assignmentId] || 0;
+  
+  // Replace old score with new score (don't add, replace)
+  users[userIndex].assignmentScores[assignmentId] = score;
+
+  // Recalculate total score
+  const assignmentScores = Object.values(users[userIndex].assignmentScores);
+  users[userIndex].score = assignmentScores.reduce((sum, s) => sum + (s || 0), 0);
+
+  // Save updated users - we need to use the same file path as users.js
+  const USERS_FILE = join(__dirname, "../data/users.json");
+  writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  
+  console.log(`Updated score for user ${studentId}: Assignment ${assignmentId} = ${score} (was ${previousScore}), Total = ${users[userIndex].score}`);
+  
+  return true;
+}
+
+// Leaderboard - Get all users with scores
+export function getLeaderboard() {
+  const users = readUsers();
+  
+  // Filter only students and sort by score (descending)
+  const students = users
+    .filter((u) => u.userType === "student" || !u.userType)
+    .map((u) => ({
+      id: u.id,
+      username: u.username,
+      email: u.email,
+      score: u.score || 0,
+      assignmentScores: u.assignmentScores || {},
+    }))
+    .sort((a, b) => b.score - a.score)
+    .map((student, index) => ({
+      ...student,
+      rank: index + 1,
+    }));
+  
+  return students;
 }
 

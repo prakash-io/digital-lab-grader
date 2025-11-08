@@ -17,7 +17,6 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../lib/utils";
 import { avatars } from "../utils/avatars";
-import { contactService } from "../services/apiService";
 
 const UserProfileLink = ({ user }) => {
   const [purchasedAvatars, setPurchasedAvatars] = useState([]);
@@ -113,9 +112,6 @@ export default function About() {
     email: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState(null);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -161,35 +157,12 @@ export default function About() {
     },
   ];
 
-  const handleContactSubmit = async (e) => {
+  const handleContactSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitError(null);
-    setSubmitSuccess(false);
-
-    try {
-      const response = await contactService.sendContactMessage(formData);
-      
-      if (response.success) {
-        setSubmitSuccess(true);
-        setFormData({ name: "", email: "", message: "" });
-        
-        // Close modal after 2 seconds
-        setTimeout(() => {
-          setContactModalOpen(false);
-          setSubmitSuccess(false);
-        }, 2000);
-      }
-    } catch (error) {
-      console.error("Contact form error:", error);
-      setSubmitError(
-        error.errors 
-          ? error.errors.map((err) => err.message).join(", ")
-          : error.message || "Failed to send message. Please try again."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Handle form submission (you can integrate with a backend API here)
+    alert("Thank you! Your message has been sent.");
+    setFormData({ name: "", email: "", message: "" });
+    setContactModalOpen(false);
   };
 
   if (!isAuthenticated) {
@@ -365,24 +338,6 @@ export default function About() {
                     Get in Touch
                   </h3>
                   <form onSubmit={handleContactSubmit} className="space-y-4">
-                    {/* Success Message */}
-                    {submitSuccess && (
-                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                        <p className="text-green-700 dark:text-green-300 text-sm font-medium">
-                          ✅ Thank you! Your message has been sent successfully.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Error Message */}
-                    {submitError && (
-                      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                        <p className="text-red-700 dark:text-red-300 text-sm font-medium">
-                          ❌ {submitError}
-                        </p>
-                      </div>
-                    )}
-
                     <div>
                       <label
                         htmlFor="name"
@@ -396,12 +351,10 @@ export default function About() {
                         required
                         placeholder="Your name"
                         value={formData.name}
-                        onChange={(e) => {
-                          setFormData({ ...formData, name: e.target.value });
-                          setSubmitError(null);
-                        }}
-                        disabled={isSubmitting}
-                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
+                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
 
@@ -418,12 +371,10 @@ export default function About() {
                         required
                         placeholder="you@example.com"
                         value={formData.email}
-                        onChange={(e) => {
-                          setFormData({ ...formData, email: e.target.value });
-                          setSubmitError(null);
-                        }}
-                        disabled={isSubmitting}
-                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
+                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
 
@@ -437,24 +388,20 @@ export default function About() {
                       <textarea
                         id="message"
                         rows="5"
-                        required
                         placeholder="Your message..."
                         value={formData.message}
-                        onChange={(e) => {
-                          setFormData({ ...formData, message: e.target.value });
-                          setSubmitError(null);
-                        }}
-                        disabled={isSubmitting}
-                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none disabled:opacity-50 disabled:cursor-not-allowed"
+                        onChange={(e) =>
+                          setFormData({ ...formData, message: e.target.value })
+                        }
+                        className="w-full px-4 py-2 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-neutral-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
                       />
                     </div>
 
                     <button
                       type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-purple-400 hover:to-pink-400 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-purple-400 hover:to-pink-400 transition-all shadow-md"
                     >
-                      {isSubmitting ? "⏳ Sending..." : "📤 Send Message"}
+                      Send Message
                     </button>
                   </form>
                 </div>

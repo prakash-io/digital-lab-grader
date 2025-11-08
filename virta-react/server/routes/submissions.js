@@ -18,7 +18,7 @@ import {
   calculateCodeQualityScore,
   calculateTotalScore,
 } from "../utils/scoring.js";
-import { createOrUpdateGrade } from "../utils/dataStorage.js";
+import { createOrUpdateGrade, updateUserScoreForAssignment } from "../utils/dataStorage.js";
 
 // Fallback function to process submission synchronously (when Redis is not available)
 async function processSubmissionSynchronously(submission, data) {
@@ -136,15 +136,19 @@ async function processSubmissionSynchronously(submission, data) {
     });
 
     // Create or update grade
+    const gradeScore = totalScore * 10; // Convert to 0-100 scale
     createOrUpdateGrade({
       assignmentId: data.assignmentId,
       submissionId: submission.id,
       studentId: data.studentId,
-      grade: totalScore * 10, // Convert to 0-100 scale
+      grade: gradeScore,
       runtime: avgRuntime,
       teacherId: assignment.teacherId,
       feedback: JSON.stringify(results.feedback),
     });
+
+    // Update user score in leaderboard (replace old score if exists)
+    updateUserScoreForAssignment(data.studentId, data.assignmentId, gradeScore);
   } catch (error) {
     console.error("Synchronous processing error:", error);
     updateSubmission(submission.id, {

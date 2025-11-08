@@ -271,24 +271,14 @@ export const gradeService = {
   },
 };
 
-// Contact Service
-export const contactService = {
-  async sendContactMessage(contactData) {
+// Leaderboard
+export const leaderboardService = {
+  async getLeaderboard() {
     try {
-      const response = await fetch(`${API_BASE_URL}/contact`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(contactData),
-      });
+      const response = await fetch(`${API_BASE_URL}/leaderboard`);
       const data = await response.json();
       if (!response.ok) {
-        const errorMessage = data.message || data.error || "Failed to send message";
-        const error = new Error(errorMessage);
-        error.status = response.status;
-        error.errors = data.errors; // Include validation errors if any
-        throw error;
+        throw new Error(data.message || "Failed to get leaderboard");
       }
       return data;
     } catch (err) {

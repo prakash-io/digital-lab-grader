@@ -13,7 +13,7 @@ import {
 import { motion } from "motion/react";
 import { cn } from "../lib/utils";
 import { Link } from "react-router-dom";
-import { submissionService, gradeService } from "../services/apiService";
+import { submissionService, gradeService, leaderboardService } from "../services/apiService";
 import { announcementService } from "../services/apiService";
 
 const Logo = () => {
@@ -66,18 +66,11 @@ export default function TeacherStudents() {
   const loadLeaderboard = async () => {
     try {
       setLoading(true);
-      // Get all submissions and grades to calculate leaderboard
-      // For now, using mock data structure similar to student leaderboard
-      // In production, this would aggregate data from submissions and grades
-      const response = await gradeService.getGradesByAssignment("");
-      // This is a simplified version - in production, you'd aggregate by student
-      setLeaderboardData([
-        { id: 1, name: "Student 1", score: 95, rank: 1 },
-        { id: 2, name: "Student 2", score: 88, rank: 2 },
-        { id: 3, name: "Student 3", score: 85, rank: 3 },
-      ]);
+      const response = await leaderboardService.getLeaderboard();
+      setLeaderboardData(response.leaderboard || []);
     } catch (err) {
       console.error("Error loading leaderboard:", err);
+      setLeaderboardData([]);
     } finally {
       setLoading(false);
     }
@@ -142,12 +135,11 @@ export default function TeacherStudents() {
   ];
 
   // Calculate stats
+  // Calculate statistics from leaderboard data
   const totalStudents = leaderboardData.length;
-  const averageScore =
-    leaderboardData.length > 0
-      ? leaderboardData.reduce((sum, student) => sum + student.score, 0) / leaderboardData.length
-      : 0;
-  const topScore = leaderboardData.length > 0 ? Math.max(...leaderboardData.map((s) => s.score)) : 0;
+  const totalScore = leaderboardData.reduce((sum, s) => sum + (s.score || 0), 0);
+  const averageScore = totalStudents > 0 ? Math.round(totalScore / totalStudents) : 0;
+  const topScore = leaderboardData.length > 0 ? Math.max(...leaderboardData.map((s) => s.score || 0)) : 0;
 
   if (!isAuthenticated || user?.userType !== "instructor") {
     return null;
@@ -294,25 +286,39 @@ export default function TeacherStudents() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-purple-200 dark:divide-purple-800">
-                    {leaderboardData.map((student, index) => (
-                      <motion.tr
-                        key={student.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="hover:bg-purple-50 dark:hover:bg-purple-900/20"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-700 dark:text-purple-300">
-                          #{student.rank}
+                    {loading ? (
+                      <tr>
+                        <td colSpan="3" className="text-center py-8 text-gray-600 dark:text-gray-400">
+                          Loading leaderboard...
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600 dark:text-purple-400">
-                          {student.name}
+                      </tr>
+                    ) : leaderboardData.length === 0 ? (
+                      <tr>
+                        <td colSpan="3" className="text-center py-8 text-gray-600 dark:text-gray-400">
+                          No students yet.
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-700 dark:text-purple-300">
-                          {student.score}
-                        </td>
-                      </motion.tr>
-                    ))}
+                      </tr>
+                    ) : (
+                      leaderboardData.map((student, index) => (
+                        <motion.tr
+                          key={student.id || student.username}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-700 dark:text-purple-300">
+                            #{student.rank}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600 dark:text-purple-400">
+                            {student.username}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-700 dark:text-purple-300">
+                            {student.score || 0}
+                          </td>
+                        </motion.tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>

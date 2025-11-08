@@ -14,6 +14,7 @@ import { motion } from "motion/react";
 import { cn } from "../lib/utils";
 import { Link } from "react-router-dom";
 import { avatars } from "../utils/avatars";
+import { leaderboardService } from "../services/apiService";
 
 const UserProfileLink = ({ user }) => {
   const [purchasedAvatars, setPurchasedAvatars] = useState([]);
@@ -103,9 +104,41 @@ export default function Leaderboard() {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
   const [open, setOpen] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [statistics, setStatistics] = useState({
+    totalStudents: 0,
+    averageScore: 0,
+    topScore: 0,
+  });
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/signup");
+    } else {
+      loadLeaderboard();
+    }
+  }, [isAuthenticated, navigate]);
+
+  const loadLeaderboard = async () => {
+    try {
+      setLoading(true);
+      const response = await leaderboardService.getLeaderboard();
+      setLeaderboardData(response.leaderboard || []);
+      setStatistics(response.statistics || {
+        totalStudents: 0,
+        averageScore: 0,
+        topScore: 0,
+      });
+    } catch (error) {
+      console.error("Error loading leaderboard:", error);
+      setLeaderboardData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isAuthenticated) {
-    navigate("/signup");
     return null;
   }
 
@@ -153,28 +186,19 @@ export default function Leaderboard() {
     },
   ];
 
-  // Sample leaderboard data
-  const leaderboardData = [
-    { rank: 1, username: "CodeMaster", score: 9850, badge: "🥇" },
-    { rank: 2, username: "AlgorithmWizard", score: 9720, badge: "🥈" },
-    { rank: 3, username: "DataStructPro", score: 9650, badge: "🥉" },
-    { rank: 4, username: "Prakash123", score: 9420, badge: "⭐" },
-    { rank: 5, username: "PythonNinja", score: 9380, badge: "⭐" },
-    { rank: 6, username: "JavaExpert", score: 9250, badge: "⭐" },
-    { rank: 7, username: "CppChampion", score: 9120, badge: "⭐" },
-    { rank: 8, username: "ReactGuru", score: 8980, badge: "⭐" },
-    { rank: 9, username: "NodeMaster", score: 8850, badge: "⭐" },
-    { rank: 10, username: "DockerDev", score: 8720, badge: "⭐" },
-  ];
+  // Map leaderboard data to include badges
+  const leaderboardWithBadges = leaderboardData.map((entry) => {
+    let badge = "⭐";
+    if (entry.rank === 1) badge = "🥇";
+    else if (entry.rank === 2) badge = "🥈";
+    else if (entry.rank === 3) badge = "🥉";
+    return { ...entry, badge };
+  });
 
-  // Always calculate statistics from leaderboard data
-  const totalStudents = leaderboardData.length;
-  const totalScore = leaderboardData.reduce((sum, entry) => sum + entry.score, 0);
-  const averageScore = totalStudents > 0 ? Math.round(totalScore / totalStudents) : 0;
-  const topScore = leaderboardData.length > 0 ? Math.max(...leaderboardData.map(entry => entry.score)) : 0;
+  const { totalStudents, averageScore, topScore } = statistics;
 
   // Check if current user is in the leaderboard
-  const currentUserRank = leaderboardData.findIndex(
+  const currentUserRank = leaderboardWithBadges.findIndex(
     (entry) => entry.username.toLowerCase() === user?.username?.toLowerCase()
   );
 
@@ -240,7 +264,7 @@ export default function Leaderboard() {
                         #{currentUserRank + 1}
                       </h2>
                       <p className="text-lg text-neutral-800 dark:text-neutral-300 mt-1">
-                        {leaderboardData[currentUserRank].username}
+                        {leaderboardWithBadges[currentUserRank]?.username}
                       </p>
                     </div>
                     <div className="text-right">
@@ -248,7 +272,7 @@ export default function Leaderboard() {
                         Score
                       </p>
                       <p className="text-3xl font-bold text-purple-700 dark:text-purple-400">
-                        {leaderboardData[currentUserRank].score.toLocaleString()}
+                        {leaderboardWithBadges[currentUserRank]?.score?.toLocaleString() || 0}
                       </p>
                     </div>
                   </div>
@@ -281,50 +305,64 @@ export default function Leaderboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {leaderboardData.map((entry, index) => {
-                        const isCurrentUser =
-                          entry.username.toLowerCase() ===
-                          user?.username?.toLowerCase();
-                        return (
-                          <motion.tr
-                            key={entry.rank}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            className={cn(
-                              "border-b border-purple-100 dark:border-purple-500/20 hover:bg-purple-50 dark:hover:bg-purple-500/10 transition-colors",
-                              isCurrentUser &&
-                                "bg-purple-100 dark:bg-purple-500/20 border-purple-300 dark:border-purple-500/50"
-                            )}
-                          >
-                            <td className="px-6 py-4">
-                              <span className="text-xl font-bold text-neutral-900 dark:text-white">
-                                #{entry.rank}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4">
-                              <span
-                                className={cn(
-                                  "text-lg font-medium",
-                                  isCurrentUser
-                                    ? "text-purple-700 dark:text-purple-300"
-                                    : "text-neutral-800 dark:text-neutral-300"
-                                )}
-                              >
-                                {entry.username}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 text-right">
-                              <span className="text-lg font-semibold text-purple-700 dark:text-purple-300">
-                                {entry.score.toLocaleString()}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 text-center">
-                              <span className="text-2xl">{entry.badge}</span>
-                            </td>
-                          </motion.tr>
-                        );
-                      })}
+                      {loading ? (
+                        <tr>
+                          <td colSpan="4" className="text-center py-8 text-gray-600 dark:text-gray-400">
+                            Loading leaderboard...
+                          </td>
+                        </tr>
+                      ) : leaderboardWithBadges.length === 0 ? (
+                        <tr>
+                          <td colSpan="4" className="text-center py-8 text-gray-600 dark:text-gray-400">
+                            No students yet. Submit assignments to see leaderboard!
+                          </td>
+                        </tr>
+                      ) : (
+                        leaderboardWithBadges.map((entry, index) => {
+                          const isCurrentUser =
+                            entry.username.toLowerCase() ===
+                            user?.username?.toLowerCase();
+                          return (
+                            <motion.tr
+                              key={entry.id || entry.username}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.05 }}
+                              className={cn(
+                                "border-b border-purple-100 dark:border-purple-500/20 hover:bg-purple-50 dark:hover:bg-purple-500/10 transition-colors",
+                                isCurrentUser &&
+                                  "bg-purple-100 dark:bg-purple-500/20 border-purple-300 dark:border-purple-500/50"
+                              )}
+                            >
+                              <td className="px-6 py-4 text-center">
+                                <span className="text-2xl">{entry.badge}</span>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className="text-xl font-bold text-neutral-900 dark:text-white">
+                                  #{entry.rank}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span
+                                  className={cn(
+                                    "text-lg font-medium",
+                                    isCurrentUser
+                                      ? "text-purple-700 dark:text-purple-300"
+                                      : "text-neutral-800 dark:text-neutral-300"
+                                  )}
+                                >
+                                  {entry.username}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-right">
+                                <span className="text-lg font-semibold text-purple-700 dark:text-purple-300">
+                                  {entry.score?.toLocaleString() || 0}
+                                </span>
+                              </td>
+                            </motion.tr>
+                          );
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>
