@@ -271,3 +271,32 @@ export const gradeService = {
   },
 };
 
+// Contact Service
+export const contactService = {
+  async sendContactMessage(contactData) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactData),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        const errorMessage = data.message || data.error || "Failed to send message";
+        const error = new Error(errorMessage);
+        error.status = response.status;
+        error.errors = data.errors; // Include validation errors if any
+        throw error;
+      }
+      return data;
+    } catch (err) {
+      if (err.name === "TypeError" && err.message.includes("fetch")) {
+        throw new Error("Network error: Could not connect to server. Please check your connection.");
+      }
+      throw err;
+    }
+  },
+};
+
