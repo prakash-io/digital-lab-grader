@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../lib/utils";
 import { avatars } from "../utils/avatars";
+import { contactService } from "../services/apiService";
 
 const UserProfileLink = ({ user }) => {
   const [purchasedAvatars, setPurchasedAvatars] = useState([]);
@@ -112,6 +113,9 @@ export default function About() {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -157,12 +161,35 @@ export default function About() {
     },
   ];
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission (you can integrate with a backend API here)
-    alert("Thank you! Your message has been sent.");
-    setFormData({ name: "", email: "", message: "" });
-    setContactModalOpen(false);
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
+    try {
+      const response = await contactService.sendContactMessage(formData);
+      
+      if (response.success) {
+        setSubmitSuccess(true);
+        setFormData({ name: "", email: "", message: "" });
+        
+        // Close modal after 2 seconds
+        setTimeout(() => {
+          setContactModalOpen(false);
+          setSubmitSuccess(false);
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Contact form error:", error);
+      setSubmitError(
+        error.errors 
+          ? error.errors.map((err) => err.message).join(", ")
+          : error.message || "Failed to send message. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isAuthenticated) {

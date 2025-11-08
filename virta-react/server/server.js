@@ -9,6 +9,7 @@ import announcementRoutes from "./routes/announcements.js";
 import notificationRoutes from "./routes/notifications.js";
 import gradeRoutes from "./routes/grades.js";
 import runPublicRoutes from "./routes/runPublic.js";
+import contactRoutes from "./routes/contact.js";
 
 // Try to start worker (requires Redis) - use dynamic import
 import("./workers/submissionWorker.js").catch((err) => {
@@ -46,7 +47,8 @@ app.get("/", (req, res) => {
       announcements: "/api/announcements",
       notifications: "/api/notifications",
       grades: "/api/grades",
-      runPublic: "/api/run-public"
+      runPublic: "/api/run-public",
+      contact: "/api/contact"
     }
   });
 });
@@ -59,6 +61,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/grades", gradeRoutes);
 app.use("/api/run-public", runPublicRoutes);
+app.use("/api/contact", contactRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
