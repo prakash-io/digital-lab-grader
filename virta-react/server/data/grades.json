@@ -70,5 +70,14 @@
     "runtime": 842,
     "teacherId": "1762564882504",
     "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "ed64183f-9d48-49fb-aaed-b6bde6b69b4e",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 891,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
   }
 ]

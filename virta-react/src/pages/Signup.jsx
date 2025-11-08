@@ -19,7 +19,7 @@ export default function SignupPage() {
 
       <main className="relative z-[5] mx-auto flex min-h-screen w-full flex-col items-center justify-center px-6">
         <div className="relative w-full flex justify-center items-center">
-          <LoginSignupForm />
+        <LoginSignupForm />
         </div>
       </main>
     </div>
