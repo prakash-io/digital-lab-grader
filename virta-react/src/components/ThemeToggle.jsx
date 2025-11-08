@@ -46,11 +46,11 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 p-2.5 sm:p-3 rounded-full bg-white dark:bg-zinc-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-zinc-200 dark:border-zinc-700"
+      className="fixed top-4 right-4 z-50 p-2.5 sm:p-3 rounded-full bg-white dark:bg-zinc-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       style={{ width: '44px', height: '44px' }}
     >
-      <div className="relative w-6 h-6 flex items-center justify-center">
+      <div className="relative w-5 h-5 flex items-center justify-center">
         {/* Sun Icon - shows in dark mode (to switch to light) */}
         <svg
           className={`absolute w-5 h-5 text-yellow-500 transition-all duration-300 ${
@@ -62,6 +62,7 @@ export function ThemeToggle() {
           strokeLinecap="round"
           strokeLinejoin="round"
           viewBox="0 0 24 24"
+          style={{ transformOrigin: 'center' }}
         >
           <circle cx="12" cy="12" r="5" />
           <line x1="12" y1="1" x2="12" y2="3" />
@@ -81,6 +82,7 @@ export function ThemeToggle() {
           }`}
           fill="currentColor"
           viewBox="0 0 24 24"
+          style={{ transformOrigin: 'center' }}
         >
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
