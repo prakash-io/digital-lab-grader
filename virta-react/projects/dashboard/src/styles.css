@@ -1,0 +1,26 @@
+.homepage {
+    min-height: 100vh;
+    background-color: #111827;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+    padding: 2rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+p {
+    color: #9ca3af;
+    font-size: 1.125rem;
+}
+

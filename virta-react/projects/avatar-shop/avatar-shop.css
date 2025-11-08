@@ -1,0 +1,175 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0f1f, #0d152b, #0f1b33);
+  color: white;
+  padding: 40px;
+}
+
+/* CONTAINER */
+.avatar-shop-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+/* HEADER CARD */
+.header-card {
+  background: rgba(165, 138, 255, 0.15);
+  border: 1.5px solid rgba(177, 141, 255, 0.25);
+  border-radius: 15px;
+  padding: 20px 30px;
+  width: 80%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: 0.3s;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shop-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #dcd5ff;
+}
+
+.shop-subtitle {
+  font-size: 14px;
+  opacity: 0.8;
+  color: #bfbaff;
+}
+
+/* COINS DISPLAY */
+.coins-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.coin-icon {
+  font-size: 22px;
+}
+
+.coins-label {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.coins-value {
+  font-size: 20px;
+  color: #c9b5ff;
+}
+
+/* FILTER BUTTONS */
+.filter-container {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filter-btn {
+  background: rgba(165, 138, 255, 0.2);
+  border: 1px solid rgba(165, 138, 255, 0.4);
+  color: #eae4ff;
+  border-radius: 8px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.filter-btn:hover {
+  background: rgba(165, 138, 255, 0.35);
+}
+
+.filter-btn.active {
+  background: rgba(165, 138, 255, 0.5);
+  border-color: rgba(177, 141, 255, 0.8);
+}
+
+/* AVATAR GRID */
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  width: 80%;
+}
+
+.avatar-card {
+  background: rgba(165, 138, 255, 0.15);
+  border: 1.5px solid rgba(177, 141, 255, 0.25);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  transition: 0.3s;
+  backdrop-filter: blur(12px);
+}
+
+.avatar-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 10px rgba(177, 141, 255, 0.4);
+}
+
+.avatar-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: 2px solid rgba(177, 141, 255, 0.4);
+}
+
+.avatar-card h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #e0d8ff;
+}
+
+.avatar-card p {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.buy-btn {
+  background: #a58aff;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.buy-btn:hover {
+  background: #b89cff;
+}
+
+/* NOTIFICATION TOAST */
+.notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(165, 138, 255, 0.3);
+  border: 1.5px solid rgba(177, 141, 255, 0.4);
+  border-radius: 10px;
+  padding: 10px 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.4s;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}

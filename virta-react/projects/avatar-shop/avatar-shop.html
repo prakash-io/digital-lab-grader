@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avatar Shop</title>
+  <link rel="stylesheet" href="avatar-shop.css">
+</head>
+<body>
+  <div class="avatar-shop-container">
+
+    <!-- HEADER -->
+    <div class="header-card">
+      <div class="header-content">
+        <div class="header-text">
+          <h1 class="shop-title">Avatar Shop</h1>
+          <p class="shop-subtitle">Customize your profile with unique avatars</p>
+        </div>
+        <div class="coins-display">
+          <span class="coin-icon">🪙</span>
+          <div class="coins-info">
+            <div class="coins-label">Your Coins</div>
+            <div class="coins-value" id="coinsValue">10,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER BUTTONS -->
+    <div class="filter-container">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="common">Common</button>
+      <button class="filter-btn" data-filter="rare">Rare</button>
+      <button class="filter-btn" data-filter="epic">Epic</button>
+      <button class="filter-btn" data-filter="legendary">Legendary</button>
+    </div>
+
+    <!-- AVATAR GRID -->
+    <div class="avatar-grid" id="avatarGrid"></div>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
+
+  <script src="avatar-shop.js"></script>
+</body>
+</html>
