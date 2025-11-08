@@ -14,7 +14,6 @@ import {
   IconTrophy,
   IconBell,
 } from "@tabler/icons-react";
-import { NotificationButton } from "../components/NotificationButton";
 import { motion } from "motion/react";
 import { cn } from "../lib/utils";
 import { avatars } from "../utils/avatars";
@@ -226,11 +225,6 @@ export default function Dashboard() {
                   onClick={link.onClick}
                 />
               ))}
-            </div>
-            
-            {/* Notification Button */}
-            <div className="mt-4 px-2">
-              <NotificationButton />
             </div>
           </div>
 

@@ -51,16 +51,22 @@ export const Card = ({ className, children, icon, showLearnMore = true }) => {
         )}
         <div className="flex-1">{children}</div>
         {showLearnMore && (
-          <div className="mt-6 flex items-center text-neutral-600 dark:text-zinc-400 group-hover:text-purple-600 dark:group-hover:text-zinc-300 transition-colors">
-            <span className="text-sm font-medium">Learn more</span>
-            <motion.span
-              className="ml-2"
+          <div className="mt-6 flex items-center justify-end">
+            <motion.div
+              className="text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300"
               initial={{ x: 0 }}
-              whileHover={{ x: 5 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              whileHover={{ x: 8, scale: 1.1 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 500, 
+                damping: 20,
+                repeat: Infinity,
+                repeatType: "reverse",
+                repeatDelay: 0.5
+              }}
             >
-              <IconArrowRight className="w-5 h-5" />
-            </motion.span>
+              <IconArrowRight className="w-6 h-6" />
+            </motion.div>
           </div>
         )}
       </div>
