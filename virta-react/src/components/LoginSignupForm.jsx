@@ -12,10 +12,6 @@ export function LoginSignupForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   
-  // Get userType from URL parameter (for university portal)
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlUserType = urlParams.get('userType');
-  
   // Login state
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -28,7 +24,8 @@ export function LoginSignupForm() {
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerPasswordTyping, setRegisterPasswordTyping] = useState(false);
   const [registerPasswordWrong, setRegisterPasswordWrong] = useState(false);
-  const [registerUserType, setRegisterUserType] = useState(urlUserType || 'student');
+  // All new registrations default to 'student'
+  const registerUserType = 'student';
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -241,17 +238,6 @@ export function LoginSignupForm() {
               }}
             />
             <PasswordEmoji isTyping={registerPasswordTyping} isWrong={registerPasswordWrong} />
-          </div>
-          <div className="input-box">
-            <select
-              value={registerUserType}
-              onChange={(e) => setRegisterUserType(e.target.value)}
-              required
-            >
-              <option value="student">Student</option>
-              <option value="instructor">Instructor</option>
-            </select>
-            <i className="bx bxs-user-circle"></i>
           </div>
           <button type="submit" className="btn" disabled={loading}>
             {loading ? "Registering..." : "Register"}
