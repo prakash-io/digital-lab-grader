@@ -10,33 +10,65 @@ try {
     host: process.env.REDIS_HOST || "localhost",
     port: process.env.REDIS_PORT || 6379,
     maxRetriesPerRequest: null,
+    enableReadyCheck: true,
     retryStrategy: (times) => {
-      if (times > 3) {
-        console.warn("Redis connection failed after 3 attempts. Job queue will not work without Redis.");
+      if (times > 10) {
+        console.warn("Redis connection failed after 10 attempts. Job queue will not work without Redis.");
         return null; // Stop retrying
       }
-      return Math.min(times * 200, 2000);
+      return Math.min(times * 200, 3000);
+    },
+    reconnectOnError: (err) => {
+      const targetError = "READONLY";
+      if (err.message.includes(targetError)) {
+        return true; // Reconnect on READONLY error
+      }
+      return false;
     },
     lazyConnect: true,
   });
 
   redisConnection.on("error", (err) => {
     console.warn("Redis connection error:", err.message);
-    console.warn("Note: Auto-grading requires Redis. Install Redis for full functionality.");
+    if (err.message.includes("Connection is closed") || err.message.includes("ECONNREFUSED")) {
+      console.warn("Note: Auto-grading requires Redis. Install Redis for full functionality.");
+    }
   });
 
   redisConnection.on("connect", () => {
-    console.log("✅ Redis connected");
+    console.log("✅ Redis connecting...");
   });
 
-  // Create submission queue
+  redisConnection.on("ready", () => {
+    console.log("✅ Redis connected and ready");
+  });
+
+  redisConnection.on("close", () => {
+    console.warn("⚠️  Redis connection closed");
+  });
+
+  redisConnection.on("reconnecting", () => {
+    console.log("🔄 Redis reconnecting...");
+  });
+
+  // Create submission queue with connection retry
   queueInstance = new Queue("submissions", {
     connection: redisConnection,
+    defaultJobOptions: {
+      removeOnComplete: {
+        age: 3600, // Keep completed jobs for 1 hour
+        count: 100, // Keep max 100 completed jobs
+      },
+      removeOnFail: {
+        age: 24 * 3600, // Keep failed jobs for 24 hours
+      },
+    },
   });
 
   // Try to connect
-  redisConnection.connect().catch(() => {
+  redisConnection.connect().catch((err) => {
     // Connection will fail if Redis is not running, that's ok
+    console.warn("Redis initial connection failed (this is ok if Redis is not installed):", err.message);
   });
 } catch (error) {
   console.warn("Failed to initialize Redis connection:", error.message);
@@ -63,7 +95,25 @@ export { redisConnection };
 // Check if Redis is available
 export function isRedisAvailable() {
   try {
-    return redisConnection !== undefined && queueInstance !== undefined && redisConnection.status === "ready";
+    if (!redisConnection || !queueInstance) {
+      return false;
+    }
+    // Check connection status - "ready" means connected, "end" means closed
+    const status = redisConnection.status;
+    return status === "ready" || status === "connecting" || status === "connect";
+  } catch (error) {
+    return false;
+  }
+}
+
+// Check if queue is ready to accept jobs
+export function isQueueReady() {
+  try {
+    if (!queueInstance || !redisConnection) {
+      return false;
+    }
+    const status = redisConnection.status;
+    return status === "ready";
   } catch (error) {
     return false;
   }

@@ -10,6 +10,151 @@ import { submissionSchema } from "../utils/validation.js";
 import { submissionQueue, setJobStatus } from "../utils/jobQueue.js";
 import { getAssignmentById } from "../utils/dataStorage.js";
 import { v4 as uuidv4 } from "uuid";
+import { runCodeInSandbox, compareOutputs } from "../utils/sandbox.js";
+import {
+  analyzeComplexity,
+  calculateCorrectnessScore,
+  calculateEfficiencyScore,
+  calculateCodeQualityScore,
+  calculateTotalScore,
+} from "../utils/scoring.js";
+import { createOrUpdateGrade } from "../utils/dataStorage.js";
+
+// Fallback function to process submission synchronously (when Redis is not available)
+async function processSubmissionSynchronously(submission, data) {
+  try {
+    updateSubmission(submission.id, {
+      status: "processing",
+    });
+
+    // Fetch assignment
+    const assignment = getAssignmentById(data.assignmentId);
+    if (!assignment) {
+      throw new Error("Assignment not found");
+    }
+
+    // Run public test cases
+    const publicTestResults = [];
+    const publicTestCases = assignment.publicTestCases || [];
+    
+    for (let i = 0; i < publicTestCases.length; i++) {
+      const testCase = publicTestCases[i];
+      const result = await runCodeInSandbox({
+        code: data.code,
+        language: data.language,
+        input: testCase.input,
+        timeLimit: assignment.timeLimit,
+        memoryLimit: assignment.memoryLimit,
+      });
+
+      const passed = result.success && compareOutputs(result.stdout, testCase.expectedOutput);
+
+      publicTestResults.push({
+        testCaseIndex: i,
+        input: testCase.input,
+        expectedOutput: testCase.expectedOutput,
+        actualOutput: result.stdout,
+        passed,
+        executionTime: result.executionTime,
+        stderr: result.stderr,
+        exitCode: result.exitCode,
+        scale: testCase.scale || 1,
+      });
+    }
+
+    // Run hidden test cases
+    const hiddenTestResults = [];
+    const hiddenTestCases = assignment.hiddenTestCases || [];
+    
+    for (let i = 0; i < hiddenTestCases.length; i++) {
+      const testCase = hiddenTestCases[i];
+      const result = await runCodeInSandbox({
+        code: data.code,
+        language: data.language,
+        input: testCase.input,
+        timeLimit: assignment.timeLimit,
+        memoryLimit: assignment.memoryLimit,
+      });
+
+      const passed = result.success && compareOutputs(result.stdout, testCase.expectedOutput);
+
+      hiddenTestResults.push({
+        testCaseIndex: i,
+        input: testCase.input,
+        expectedOutput: testCase.expectedOutput,
+        actualOutput: result.stdout,
+        passed,
+        executionTime: result.executionTime,
+        stderr: result.stderr,
+        exitCode: result.exitCode,
+        scale: testCase.scale || 1,
+      });
+    }
+
+    // Analyze complexity
+    const allTestResults = [...publicTestResults, ...hiddenTestResults];
+    const complexity = analyzeComplexity(allTestResults);
+
+    // Calculate scores
+    const correctnessScore = calculateCorrectnessScore(publicTestResults, hiddenTestResults);
+    const efficiencyScore = calculateEfficiencyScore(complexity, allTestResults, null);
+    const codeQuality = calculateCodeQualityScore(data.code, data.language);
+    const totalScore = calculateTotalScore(correctnessScore, efficiencyScore.score, codeQuality.score);
+
+    // Prepare results
+    const results = {
+      publicTestResults,
+      hiddenTestResults,
+      complexity,
+      scores: {
+        correctness: correctnessScore,
+        efficiency: efficiencyScore,
+        codeQuality: codeQuality.score,
+        total: totalScore,
+      },
+      feedback: {
+        correctness: `Passed ${publicTestResults.filter((r) => r.passed).length}/${publicTestResults.length} public tests and ${hiddenTestResults.filter((r) => r.passed).length}/${hiddenTestResults.length} hidden tests`,
+        efficiency: `Complexity: ${complexity}. Efficiency score based on algorithm analysis.`,
+        codeQuality: codeQuality.feedback.join("; "),
+      },
+      status: "completed",
+      gradedAt: new Date().toISOString(),
+    };
+
+    // Calculate average runtime
+    const avgRuntime = allTestResults.length > 0
+      ? allTestResults.reduce((sum, r) => sum + (r.executionTime || 0), 0) / allTestResults.length
+      : 0;
+
+    // Update submission with results
+    updateSubmission(submission.id, {
+      status: "graded",
+      results,
+      runtime: avgRuntime,
+      graded: true,
+      grade: totalScore * 10, // Convert to 0-100 scale
+    });
+
+    // Create or update grade
+    createOrUpdateGrade({
+      assignmentId: data.assignmentId,
+      submissionId: submission.id,
+      studentId: data.studentId,
+      grade: totalScore * 10, // Convert to 0-100 scale
+      runtime: avgRuntime,
+      teacherId: assignment.teacherId,
+      feedback: JSON.stringify(results.feedback),
+    });
+  } catch (error) {
+    console.error("Synchronous processing error:", error);
+    updateSubmission(submission.id, {
+      status: "error",
+      error: error.message,
+      graded: false,
+    });
+    throw error;
+  }
+}
 
 const router = express.Router();
 
@@ -76,42 +221,57 @@ router.post("/", async (req, res) => {
     // Enqueue job for grading
     try {
       // Check if queue is available (Redis)
-      if (submissionQueue && typeof submissionQueue.add === "function") {
-        const job = await submissionQueue.add("grade-submission", {
-          submissionId: submission.id,
-          assignmentId: data.assignmentId,
-          code: data.code,
-          language: data.language,
-          studentId: data.studentId,
-        }, {
-          jobId: submission.id,
-          attempts: 3,
-          backoff: {
-            type: "exponential",
-            delay: 2000,
-          },
-        });
+      const { isQueueReady } = await import("../utils/jobQueue.js");
+      
+      if (submissionQueue && typeof submissionQueue.add === "function" && isQueueReady()) {
+        try {
+          const job = await submissionQueue.add("grade-submission", {
+            submissionId: submission.id,
+            assignmentId: data.assignmentId,
+            code: data.code,
+            language: data.language,
+            studentId: data.studentId,
+          }, {
+            jobId: submission.id,
+            attempts: 3,
+            backoff: {
+              type: "exponential",
+              delay: 2000,
+            },
+          });
 
-        // Set initial job status
-        setJobStatus(submission.id, {
-          status: "processing",
-          jobId: job.id,
-        });
+          // Set initial job status
+          setJobStatus(submission.id, {
+            status: "processing",
+            jobId: job.id,
+          });
+        } catch (queueError) {
+          // Handle connection closed or other queue errors
+          if (queueError.message && queueError.message.includes("Connection is closed")) {
+            console.error("Redis connection closed. Processing submission synchronously as fallback.");
+            // Fallback: Process submission synchronously
+            await processSubmissionSynchronously(submission, data);
+          } else {
+            throw queueError;
+          }
+        }
       } else {
-        // If Redis is not available, mark as error
-        console.warn("Redis queue not available. Marking submission as error.");
-        updateSubmission(submission.id, {
-          status: "error",
-          error: "Auto-grading is currently unavailable. Please ensure Redis is running.",
-        });
+        // If Redis is not available, process synchronously as fallback
+        console.warn("Redis queue not available. Processing submission synchronously as fallback.");
+        await processSubmissionSynchronously(submission, data);
       }
     } catch (queueError) {
       console.error("Error adding job to queue:", queueError);
-      // If queue fails, mark submission as error
-      updateSubmission(submission.id, {
-        status: "error",
-        error: queueError.message || "Failed to queue submission for grading. Please ensure Redis is running.",
-      });
+      // Fallback: Try to process synchronously
+      try {
+        await processSubmissionSynchronously(submission, data);
+      } catch (syncError) {
+        // If synchronous processing also fails, mark as error
+        updateSubmission(submission.id, {
+          status: "error",
+          error: syncError.message || "Failed to process submission. Please try again.",
+        });
+      }
     }
 
     res.status(201).json({
