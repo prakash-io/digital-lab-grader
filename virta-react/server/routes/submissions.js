@@ -272,13 +272,19 @@ router.post("/", async (req, res) => {
       }
     }
 
+    // Get updated submission status (may be graded if processed synchronously)
+    const updatedSubmission = getSubmissionById(submission.id);
+    
     res.status(201).json({
       success: true,
-      message: "Submission created and queued for grading",
+      message: updatedSubmission?.status === "graded" 
+        ? "Submission created and graded successfully" 
+        : "Submission created and queued for grading",
       submission: {
         id: submission.id,
-        status: "pending",
+        status: updatedSubmission?.status || "pending",
         submittedAt: submission.submittedAt,
+        results: updatedSubmission?.results || null,
       },
     });
   } catch (error) {
