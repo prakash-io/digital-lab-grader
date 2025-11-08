@@ -2,17 +2,41 @@
   {
     "id": "0cb03af9-fad8-4644-a3af-106b372e550d",
     "title": "Minimum Sum of Absolute Differences of Pairs",
-    "description": "You are given two arrays A and B of equal length N. Your task is to pair each element of array A to an element in array B, such that the sum of the absolute differences of all the pairs is minimum.\n\nExample 1:\n\nInput:\nN = 4\nA = {4,1,8,7}\nB = {2,3,6,5}\nOutput:\n6\nExplanation:\nIf we take the pairings as (1,2), (4,3),\n(7,5), and (8,6), the sum will be S =\n|1 - 2| + |4 - 3| + |7 - 5| + |8 - 6| = 6.\nIt can be shown that this is the minimum sum we can get.\n",
-    "testCases": [
+    "description": "You are given two arrays A and B of equal length N. Your task is to pair each element of array A to an element in array B, such that the sum of the absolute differences of all the pairs is minimum.\n\nExample 1:\n\nInput:\nN = 4\nA = {4,1,8,7}\nB = {2,3,6,5}\nOutput:\n6\nExplanation:\nIf we take the pairings as (1,2), (4,3),\n(7,5), and (8,6), the sum will be S =\n|1 - 2| + |4 - 3| + |7 - 5| + |8 - 6| = 6.\nIt can be shown that this is the minimum sum we can get.\n\nExample 2:\n\nInput:\nN = 3\nA = {4,1,2}\nB = {2,4,1}\nOutput:\n0\n",
+    "languages": [
+      "python",
+      "javascript",
+      "java",
+      "cpp",
+      "c"
+    ],
+    "timeLimit": 5000,
+    "memoryLimit": 256,
+    "ioSpec": {
+      "inputFormat": "First line contains N (length of arrays)\nSecond line contains N space-separated integers for array A\nThird line contains N space-separated integers for array B",
+      "outputFormat": "Print a single integer representing the minimum sum of absolute differences",
+      "constraints": "1 ≤ N ≤ 10^5\n1 ≤ A[i], B[i] ≤ 10^9"
+    },
+    "constraints": "1 ≤ N ≤ 10^5\n1 ≤ A[i], B[i] ≤ 10^9",
+    "publicTestCases": [
+      {
+        "input": "4\n4 1 8 7\n2 3 6 5\n",
+        "expectedOutput": "6",
+        "isPublic": true,
+        "scale": 4
+      },
       {
         "input": "3\n4 1 2\n2 4 1\n",
-        "expectedOutput": "0"
+        "expectedOutput": "0",
+        "isPublic": true,
+        "scale": 3
       }
     ],
+    "hiddenTestCases": [],
     "teacherId": "1762564882504",
     "teacherName": "prak1234",
     "dueDate": "2025-11-09T12:00",
     "createdAt": "2025-11-08T01:51:44.615Z",
-    "updatedAt": "2025-11-08T01:51:44.615Z"
+    "updatedAt": "2025-11-08T12:00:00.000Z"
   }
 ]
