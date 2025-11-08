@@ -40,6 +40,17 @@ Create a `.env` file in the server directory:
 PORT=3001
 JWT_SECRET=your-secret-key-here
 REDIS_URL=redis://localhost:6379
+
+# Email Configuration (for Contact Form)
+# Gmail App Password is required (not your regular Gmail password)
+# Steps to get Gmail App Password:
+# 1. Go to your Google Account settings
+# 2. Enable 2-Step Verification
+# 3. Go to App Passwords (under Security)
+# 4. Generate a new app password for "Mail"
+# 5. Use that 16-character password here
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
 ```
 
 ### Redis Setup (Optional)
@@ -92,6 +103,9 @@ The server will run on `http://localhost:3001`
 - `POST /api/submissions` - Submit code for grading
 - `GET /api/submissions/:id` - Get submission status
 - `GET /api/submissions/assignment/:assignmentId` - Get submissions for assignment
+
+### Contact
+- `POST /api/contact` - Send contact form message (sends email to Prakash01022005@gmail.com)
 
 ### Public Tests
 - `POST /api/run-public` - Run public test cases (rate-limited: 10 req/min)
