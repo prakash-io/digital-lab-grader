@@ -12,7 +12,6 @@ import {
   IconFileText,
   IconCode,
   IconTrophy,
-  IconBell,
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "../lib/utils";
