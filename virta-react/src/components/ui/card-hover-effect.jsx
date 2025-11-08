@@ -54,15 +54,22 @@ export const Card = ({ className, children, icon, showLearnMore = true }) => {
           <div className="mt-6 flex items-center justify-end">
             <motion.div
               className="text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300"
-              initial={{ x: 0 }}
-              whileHover={{ x: 8, scale: 1.1 }}
+              animate={{ 
+                x: [0, 6, 0],
+              }}
               transition={{ 
-                type: "spring", 
-                stiffness: 500, 
-                damping: 20,
+                duration: 2,
                 repeat: Infinity,
-                repeatType: "reverse",
-                repeatDelay: 0.5
+                ease: "easeInOut"
+              }}
+              whileHover={{ 
+                x: 10,
+                scale: 1.15,
+                transition: { 
+                  type: "spring", 
+                  stiffness: 500, 
+                  damping: 15
+                }
               }}
             >
               <IconArrowRight className="w-6 h-6" />
