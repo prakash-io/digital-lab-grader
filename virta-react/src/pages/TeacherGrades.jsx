@@ -12,6 +12,7 @@ import { motion } from "motion/react";
 import { cn } from "../lib/utils";
 import { Link } from "react-router-dom";
 import { submissionService, gradeService, assignmentService } from "../services/apiService";
+import { avatars } from "../utils/avatars";
 
 const Logo = () => {
   return (
@@ -39,6 +40,61 @@ const LogoIcon = () => {
     >
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
     </Link>
+  );
+};
+
+const UserProfileLink = ({ user }) => {
+  const [purchasedAvatars, setPurchasedAvatars] = useState([]);
+  
+  useEffect(() => {
+    if (user?.id) {
+      const userData = localStorage.getItem(`userData_${user.id}`);
+      if (userData) {
+        const data = JSON.parse(userData);
+        setPurchasedAvatars(data.purchasedAvatars || []);
+      }
+    }
+  }, [user?.id, user?.purchasedAvatars]);
+
+  return (
+    <div>
+      <SidebarLink
+        link={{
+          label: (
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="truncate max-w-[120px]">{user?.username || "User"}</span>
+              {purchasedAvatars.length > 0 && (
+                <div className="flex gap-0.5 items-center">
+                  {purchasedAvatars.slice(0, 2).map((avatarId) => {
+                    const avatar = avatars.find(a => a.id === avatarId);
+                    return avatar ? (
+                      <img
+                        key={avatarId}
+                        src={avatar.img}
+                        alt={avatar.name}
+                        className="w-4 h-4 rounded-full border border-purple-400/50 flex-shrink-0"
+                        title={avatar.name}
+                      />
+                    ) : null;
+                  })}
+                  {purchasedAvatars.length > 2 && (
+                    <span className="text-[10px] text-purple-600 dark:text-purple-400 flex-shrink-0">
+                      +{purchasedAvatars.length - 2}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          ),
+          href: "/profile",
+          icon: (
+            <div className="h-7 w-7 shrink-0 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">
+              {user?.username?.charAt(0).toUpperCase() || "U"}
+            </div>
+          ),
+        }}
+      />
+    </div>
   );
 };
 
@@ -161,6 +217,8 @@ export default function TeacherGrades() {
               ))}
             </div>
           </div>
+
+          <UserProfileLink user={user} />
         </SidebarBody>
       </Sidebar>
 
