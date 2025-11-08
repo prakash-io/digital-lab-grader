@@ -219,7 +219,7 @@ export default function About() {
                   <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-3">
                     Our Mission
                   </h3>
-                  <p className="text-gray-700 dark:text-gray-300 line-height-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                     We aim to make coding accessible, intuitive, and engaging for everyone — from beginners exploring their first HTML tags to professionals refining complex applications.
                   </p>
                 </div>
@@ -229,7 +229,7 @@ export default function About() {
                   <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-3">
                     Our Vision
                   </h3>
-                  <p className="text-gray-700 dark:text-gray-300 line-height-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                     To redefine how people learn and collaborate through code — creating an ecosystem where ideas, creativity, and technology converge effortlessly.
                   </p>
                 </div>
@@ -239,7 +239,7 @@ export default function About() {
                   <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-3">
                     Our Values
                   </h3>
-                  <p className="text-gray-700 dark:text-gray-300 line-height-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                     Transparency, curiosity, and innovation. We believe in open knowledge, shared growth, and the power of creative collaboration.
                   </p>
                 </div>
@@ -249,7 +249,7 @@ export default function About() {
                   <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-3">
                     Meet the Team
                   </h3>
-                  <p className="text-gray-700 dark:text-gray-300 line-height-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                     A passionate group of developers, designers, and educators committed to improving the coding experience — one line of code at a time.
                   </p>
                 </div>
