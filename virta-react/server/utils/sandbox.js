@@ -16,21 +16,27 @@ export async function runCodeInSandbox({ code, language, input, timeLimit, memor
 
     const pistonLanguage = languageMap[language] || language;
 
-    // Prepare input with stdin
+    // Map language to file extension for Piston API
+    const fileExtensionMap = {
+      python: "py",
+      javascript: "js",
+      java: "java",
+      cpp: "cpp",
+      c: "c",
+    };
+
+    const fileExtension = fileExtensionMap[language] || "txt";
+    // Java requires Main.java, other languages use main.{ext}
+    const fileName = language === "java" ? "Main.java" : `main.${fileExtension}`;
+
+    // Prepare files array - ONLY the source code, NOT stdin
+    // Piston API expects files with proper extensions
     const files = [
       {
-        name: "main",
+        name: fileName,
         content: code,
       },
     ];
-
-    // Add input to stdin if provided
-    if (input) {
-      files.push({
-        name: "stdin",
-        content: input,
-      });
-    }
 
     let response;
     const timeout = (timeLimit || 5000) + 10000; // Add 10s buffer
