@@ -110,7 +110,6 @@ export default function CodeEditor() {
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState('print("Hello World!")');
   const [output, setOutput] = useState("Your result will appear here...");
-  const [isRunning, setIsRunning] = useState(false);
   const [isRunningPublicTests, setIsRunningPublicTests] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [assignment, setAssignment] = useState(null);
@@ -208,35 +207,7 @@ export default function CodeEditor() {
     },
   ];
 
-  const handleRun = async () => {
-    setIsRunning(true);
-    setOutput("Running your code...");
-
-    try {
-      const startTime = performance.now();
-      const res = await fetch("https://emkc.org/api/v2/piston/execute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          language: language,
-          version: "*",
-          files: [{ name: "main", content: code }],
-        }),
-      });
-
-      const endTime = performance.now();
-      const calculatedRuntime = Math.round(endTime - startTime);
-      setRuntime(calculatedRuntime);
-
-      const data = await res.json();
-      const result = data.run?.output || data.run?.stderr || "No output.";
-      setOutput(result);
-    } catch (err) {
-      setOutput("Error: " + err.message);
-    } finally {
-      setIsRunning(false);
-    }
-  };
+  // Run button removed - users should use "Test Public" or "Submit" instead
 
   const handleRunPublicTests = async () => {
     if (!assignment) {
@@ -245,6 +216,9 @@ export default function CodeEditor() {
     }
 
     setIsRunningPublicTests(true);
+    // Don't clear grading results when running public tests
+    // Keep the existing output or add test results below it
+    const previousOutput = output;
     setOutput("Running public tests...");
 
     try {
@@ -257,13 +231,57 @@ export default function CodeEditor() {
         return `Test Case ${index + 1}: ${status}\n  Input: ${result.input}\n  Expected: ${result.expectedOutput}\n  Got: ${result.actualOutput}\n  Time: ${result.executionTime}ms${result.stderr ? `\n  Error: ${result.stderr}` : ""}`;
       }).join("\n\n");
 
-      setOutput(
-        `--- Public Test Results ---\n\n` +
-        `Passed: ${summary.passed}/${summary.total} (${(summary.passRate * 100).toFixed(1)}%)\n\n` +
-        resultsText
-      );
+      // If there are grading results, show them first, then test results
+      if (gradingResults) {
+        setOutput(
+          `--- Grading Results (from previous submission) ---\n\n` +
+          `Total Score: ${(gradingResults.scores?.total !== null && gradingResults.scores?.total !== undefined) 
+            ? gradingResults.scores.total.toFixed(2) 
+            : (gradingResults.scores?.correctness !== undefined && 
+                gradingResults.scores?.efficiency !== undefined && 
+                gradingResults.scores?.codeQuality !== undefined
+                ? (gradingResults.scores.correctness + 
+                   (typeof gradingResults.scores.efficiency === 'object' 
+                     ? gradingResults.scores.efficiency.score 
+                     : gradingResults.scores.efficiency) + 
+                   gradingResults.scores.codeQuality).toFixed(2)
+                : "0")
+          }/10\n` +
+          `Correctness: ${gradingResults.scores?.correctness?.toFixed(2) || "0"}/6\n` +
+          `Efficiency: ${(typeof gradingResults.scores?.efficiency === 'object' 
+            ? gradingResults.scores.efficiency.score?.toFixed(2)
+            : gradingResults.scores?.efficiency?.toFixed(2)) || "0"}/3\n` +
+          `Code Quality: ${gradingResults.scores?.codeQuality?.toFixed(2) || "0"}/1\n\n` +
+          `--- Public Test Results (current run) ---\n\n` +
+          `Passed: ${summary.passed}/${summary.total} (${(summary.passRate * 100).toFixed(1)}%)\n\n` +
+          resultsText
+        );
+      } else {
+        setOutput(
+          `--- Public Test Results ---\n\n` +
+          `Passed: ${summary.passed}/${summary.total} (${(summary.passRate * 100).toFixed(1)}%)\n\n` +
+          resultsText
+        );
+      }
     } catch (err) {
-      setOutput("Error: " + err.message);
+      // On error, restore previous output if it had grading results
+      if (gradingResults) {
+        setOutput(`Error: ${err.message}\n\n--- Grading Results (from previous submission) ---\n\n` +
+          `Total Score: ${(gradingResults.scores?.total !== null && gradingResults.scores?.total !== undefined) 
+            ? gradingResults.scores.total.toFixed(2) 
+            : (gradingResults.scores?.correctness !== undefined && 
+                gradingResults.scores?.efficiency !== undefined && 
+                gradingResults.scores?.codeQuality !== undefined
+                ? (gradingResults.scores.correctness + 
+                   (typeof gradingResults.scores.efficiency === 'object' 
+                     ? gradingResults.scores.efficiency.score 
+                     : gradingResults.scores.efficiency) + 
+                   gradingResults.scores.codeQuality).toFixed(2)
+                : "0")
+          }/10`);
+      } else {
+        setOutput("Error: " + err.message);
+      }
     } finally {
       setIsRunningPublicTests(false);
     }
@@ -474,22 +492,15 @@ export default function CodeEditor() {
                           )}
                         </select>
                         <button
-                          onClick={handleRun}
-                          disabled={isRunning || isSubmitting || isRunningPublicTests}
-                          className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md"
-                        >
-                          {isRunning ? "⏳ Running..." : "▶️ Run"}
-                        </button>
-                        <button
                           onClick={handleRunPublicTests}
-                          disabled={isRunning || isSubmitting || isRunningPublicTests || !assignment}
+                          disabled={isSubmitting || isRunningPublicTests || !assignment}
                           className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-green-400 hover:to-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md"
                         >
                           {isRunningPublicTests ? "⏳ Testing..." : "🧪 Test Public"}
                         </button>
                         <button
                           onClick={handleSubmit}
-                          disabled={isRunning || isSubmitting || isRunningPublicTests || !assignment}
+                          disabled={isSubmitting || isRunningPublicTests || !assignment}
                           className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-purple-400 hover:to-pink-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md"
                         >
                           {isSubmitting ? "⏳ Submitting..." : "📤 Submit"}
