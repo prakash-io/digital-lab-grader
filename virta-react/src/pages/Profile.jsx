@@ -337,10 +337,13 @@ export default function Profile() {
     return null;
   }
 
+  // Determine dashboard route based on user type
+  const dashboardRoute = user?.userType === 'instructor' ? '/instructor-dashboard' : '/dashboard';
+  
   const links = [
     {
       label: "Dashboard",
-      href: "/dashboard",
+      href: dashboardRoute,
       icon: (
         <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
@@ -412,7 +415,7 @@ export default function Profile() {
           <div className="bg-neutral-100 dark:bg-neutral-800/70 px-4 pt-4 pb-4 md:px-6 md:pt-6">
             <div className="flex items-center gap-3">
               <button
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate(user?.userType === 'instructor' ? '/instructor-dashboard' : '/dashboard')}
                 className="p-2 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
                 aria-label="Go back"
               >
@@ -477,7 +480,7 @@ export default function Profile() {
                     </div>
                   )}
                   <p className="text-lg text-purple-700 dark:text-purple-300 mb-2">
-                    Student
+                    {user?.userType === 'instructor' ? 'Teacher' : 'Student'}
                   </p>
                   <p className="text-base text-purple-600 dark:text-purple-400">
                     Username: {user?.username || "N/A"}
