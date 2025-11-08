@@ -373,25 +373,25 @@ export default function CodeEditor() {
                       {assignment ? (
                         <>
                           <div className="mb-3 text-base text-gray-800 dark:text-white whitespace-pre-wrap">{assignment.description}</div>
-                          {assignment.testCases && assignment.testCases.length > 0 && (
+                          {assignment.publicTestCases && assignment.publicTestCases.length > 0 && (
                             <div className="mb-3">
-                              <p className="font-semibold mb-2 text-gray-900 dark:text-white">Test Cases:</p>
-                              {assignment.testCases.map((testCase, index) => (
+                              <p className="font-semibold mb-2 text-gray-900 dark:text-white">Public Test Cases:</p>
+                              {assignment.publicTestCases.map((testCase, index) => (
                                 <div
                                   key={index}
                                   className="mb-2 p-2 bg-purple-50 dark:bg-purple-900/20 rounded border border-purple-200 dark:border-purple-800"
                                 >
-                                  <div className="text-sm text-gray-800 dark:text-white">
-                                    <strong>Input:</strong>{" "}
-                                    <code className="bg-neutral-200 dark:bg-zinc-800 px-1 rounded text-gray-900 dark:text-white">
+                                  <div className="text-sm text-gray-800 dark:text-white mb-1">
+                                    <strong>Input:</strong>
+                                    <pre className="mt-1 p-2 bg-neutral-200 dark:bg-zinc-800 rounded text-xs whitespace-pre-wrap font-mono text-gray-900 dark:text-white">
                                       {testCase.input}
-                                    </code>
+                                    </pre>
                                   </div>
-                                  <div className="text-sm mt-1 text-gray-800 dark:text-white">
-                                    <strong>Expected Output:</strong>{" "}
-                                    <code className="bg-neutral-200 dark:bg-zinc-800 px-1 rounded text-gray-900 dark:text-white">
+                                  <div className="text-sm text-gray-800 dark:text-white">
+                                    <strong>Expected Output:</strong>
+                                    <pre className="mt-1 p-2 bg-neutral-200 dark:bg-zinc-800 rounded text-xs whitespace-pre-wrap font-mono text-gray-900 dark:text-white">
                                       {testCase.expectedOutput}
-                                    </code>
+                                    </pre>
                                   </div>
                                 </div>
                               ))}
