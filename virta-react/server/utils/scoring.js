@@ -60,17 +60,43 @@ export function analyzeComplexity(testResults) {
 
 // Calculate correctness score (0-6)
 export function calculateCorrectnessScore(publicResults, hiddenResults) {
-  const publicPassRate = publicResults.length > 0
-    ? publicResults.filter((r) => r.passed).length / publicResults.length
+  const publicCount = publicResults.length;
+  const hiddenCount = hiddenResults.length;
+  const totalCount = publicCount + hiddenCount;
+
+  // If no tests at all, return 0
+  if (totalCount === 0) {
+    return 0;
+  }
+
+  // Calculate pass rates
+  const publicPassRate = publicCount > 0
+    ? publicResults.filter((r) => r.passed).length / publicCount
     : 0;
 
-  const hiddenPassRate = hiddenResults.length > 0
-    ? hiddenResults.filter((r) => r.passed).length / hiddenResults.length
+  const hiddenPassRate = hiddenCount > 0
+    ? hiddenResults.filter((r) => r.passed).length / hiddenCount
     : 0;
 
-  // Weighted: 30% public, 70% hidden
-  const weightedPassRate = 0.3 * publicPassRate + 0.7 * hiddenPassRate;
-  return 6 * weightedPassRate;
+  // Handle different scenarios:
+  // 1. Only public tests: base score entirely on public tests
+  // 2. Only hidden tests: base score entirely on hidden tests
+  // 3. Both exist: use weighted formula (30% public, 70% hidden)
+  let weightedPassRate;
+  if (publicCount === 0 && hiddenCount > 0) {
+    // Only hidden tests
+    weightedPassRate = hiddenPassRate;
+  } else if (hiddenCount === 0 && publicCount > 0) {
+    // Only public tests - give full credit based on public tests
+    weightedPassRate = publicPassRate;
+  } else {
+    // Both exist - use weighted formula
+    weightedPassRate = 0.3 * publicPassRate + 0.7 * hiddenPassRate;
+  }
+
+  const score = 6 * weightedPassRate;
+  // Round to 2 decimal places to avoid floating point precision issues
+  return Math.round(score * 100) / 100;
 }
 
 // Calculate efficiency score (0-3)
@@ -88,12 +114,20 @@ export function calculateEfficiencyScore(complexity, testResults, baseRuntime) {
   }
 
   // If less than 80% tests pass, cap efficiency at 50%
-  const passRate = testResults.filter((r) => r.passed).length / testResults.length;
+  const passRate = testResults.length > 0 
+    ? testResults.filter((r) => r.passed).length / testResults.length 
+    : 0;
   if (passRate < 0.8) {
     runtimeFactor = Math.min(runtimeFactor, 0.5);
   }
 
-  return complexityPoints * runtimeFactor;
+  const score = complexityPoints * runtimeFactor;
+  // Return object to match expected usage pattern
+  return {
+    score: Math.round(score * 100) / 100,
+    complexity: complexity,
+    runtimeFactor: Math.round(runtimeFactor * 100) / 100,
+  };
 }
 
 // Calculate code quality score (0-1)
@@ -157,6 +191,8 @@ export function calculateCodeQualityScore(code, language) {
 
 // Calculate total score (0-10)
 export function calculateTotalScore(correctness, efficiency, codeQuality) {
-  return correctness + efficiency + codeQuality;
+  const total = correctness + efficiency + codeQuality;
+  // Round to 2 decimal places to avoid floating point issues
+  return Math.round(total * 100) / 100;
 }
 
