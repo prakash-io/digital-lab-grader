@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 import assignmentRoutes from "./routes/assignments.js";
 import submissionRoutes from "./routes/submissions.js";
@@ -10,6 +11,9 @@ import notificationRoutes from "./routes/notifications.js";
 import gradeRoutes from "./routes/grades.js";
 import runPublicRoutes from "./routes/runPublic.js";
 import leaderboardRoutes from "./routes/leaderboard.js";
+
+// Load environment variables
+dotenv.config();
 
 // Try to start worker (requires Redis) - use dynamic import
 import("./workers/submissionWorker.js").catch((err) => {
@@ -21,17 +25,27 @@ import("./workers/submissionWorker.js").catch((err) => {
 
 const app = express();
 const server = createServer(app);
+
+// CORS configuration
+const corsOrigins = process.env.CORS_ORIGINS 
+  ? process.env.CORS_ORIGINS.split(",").map(origin => origin.trim())
+  : ["http://localhost:5173", "http://localhost:3000"];
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: corsOrigins,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: corsOrigins,
+  credentials: true,
+}));
 app.use(express.json());
 
 // Root route

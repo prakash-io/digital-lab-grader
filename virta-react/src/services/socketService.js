@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = "http://localhost:3001";
+// Socket.IO connection URL - uses environment variable or falls back to localhost
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:3001";
 
 let socket = null;
 
