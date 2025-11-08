@@ -285,27 +285,27 @@ export default function StudentAssignments() {
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 pr-32">
                       {assignment.title}
                     </h3>
-                    <p className="text-gray-700 dark:text-white mb-4">
+                    <div className="text-gray-700 dark:text-white mb-4 whitespace-pre-wrap">
                       {assignment.description}
-                    </p>
+                    </div>
                     {(assignment.ioSpec?.inputFormat || assignment.ioSpec?.outputFormat || assignment.constraints) && (
                       <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
                         {assignment.ioSpec?.inputFormat && (
                           <div className="mb-2">
                             <strong className="text-sm text-gray-900 dark:text-white">Input Format:</strong>
-                            <p className="text-sm text-gray-800 dark:text-white mt-1">{assignment.ioSpec.inputFormat}</p>
+                            <div className="text-sm text-gray-800 dark:text-white mt-1 whitespace-pre-wrap">{assignment.ioSpec.inputFormat}</div>
                           </div>
                         )}
                         {assignment.ioSpec?.outputFormat && (
                           <div className="mb-2">
                             <strong className="text-sm text-gray-900 dark:text-white">Output Format:</strong>
-                            <p className="text-sm text-gray-800 dark:text-white mt-1">{assignment.ioSpec.outputFormat}</p>
+                            <div className="text-sm text-gray-800 dark:text-white mt-1 whitespace-pre-wrap">{assignment.ioSpec.outputFormat}</div>
                           </div>
                         )}
                         {assignment.constraints && (
                           <div>
                             <strong className="text-sm text-gray-900 dark:text-white">Constraints:</strong>
-                            <p className="text-sm text-gray-800 dark:text-white mt-1">{assignment.constraints}</p>
+                            <div className="text-sm text-gray-800 dark:text-white mt-1 whitespace-pre-wrap">{assignment.constraints}</div>
                           </div>
                         )}
                       </div>

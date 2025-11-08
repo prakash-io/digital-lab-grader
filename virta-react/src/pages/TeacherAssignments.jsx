@@ -702,9 +702,9 @@ export default function TeacherAssignments() {
                         <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-2">
                           {assignment.title}
                         </h3>
-                        <p className="text-purple-600 dark:text-purple-400 mb-4 line-clamp-2">
+                        <div className="text-purple-600 dark:text-purple-400 mb-4 line-clamp-2 whitespace-pre-wrap">
                           {assignment.description}
-                        </p>
+                        </div>
                         <div className="text-sm text-purple-500 dark:text-purple-500">
                           Created: {new Date(assignment.createdAt).toLocaleDateString()}
                           {assignment.dueDate && (

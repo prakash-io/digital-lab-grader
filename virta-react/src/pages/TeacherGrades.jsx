@@ -200,7 +200,7 @@ export default function TeacherGrades() {
                       {assignment.title}
                     </h3>
                     <p className="text-purple-600 dark:text-purple-400">
-                      {assignment.description}
+                      <div className="whitespace-pre-wrap">{assignment.description}</div>
                     </p>
                   </div>
                 ))}

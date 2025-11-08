@@ -372,7 +372,7 @@ export default function CodeEditor() {
                     <div className="question-content">
                       {assignment ? (
                         <>
-                          <p className="mb-3 text-base text-gray-800 dark:text-white">{assignment.description}</p>
+                          <div className="mb-3 text-base text-gray-800 dark:text-white whitespace-pre-wrap">{assignment.description}</div>
                           {assignment.testCases && assignment.testCases.length > 0 && (
                             <div className="mb-3">
                               <p className="font-semibold mb-2 text-gray-900 dark:text-white">Test Cases:</p>
