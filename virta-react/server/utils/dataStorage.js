@@ -274,18 +274,22 @@ export function updateUserScoreForAssignment(studentId, assignmentId, score) {
     return false;
   }
 
-  // Initialize assignmentScores if it doesn't exist
+  // Initialize score and assignmentScores if they don't exist (for existing users)
+  if (users[userIndex].score === undefined || users[userIndex].score === null) {
+    users[userIndex].score = 0;
+  }
   if (!users[userIndex].assignmentScores) {
     users[userIndex].assignmentScores = {};
   }
 
   // Get previous score for this assignment (if any)
   const previousScore = users[userIndex].assignmentScores[assignmentId] || 0;
+  const previousTotal = users[userIndex].score || 0;
   
   // Replace old score with new score (don't add, replace)
   users[userIndex].assignmentScores[assignmentId] = score;
 
-  // Recalculate total score
+  // Recalculate total score by summing all assignment scores
   const assignmentScores = Object.values(users[userIndex].assignmentScores);
   users[userIndex].score = assignmentScores.reduce((sum, s) => sum + (s || 0), 0);
 
@@ -293,7 +297,7 @@ export function updateUserScoreForAssignment(studentId, assignmentId, score) {
   const USERS_FILE = join(__dirname, "../data/users.json");
   writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
   
-  console.log(`Updated score for user ${studentId}: Assignment ${assignmentId} = ${score} (was ${previousScore}), Total = ${users[userIndex].score}`);
+  console.log(`Updated score for user ${studentId} (${users[userIndex].username}): Assignment ${assignmentId} = ${score} (was ${previousScore}), Total = ${users[userIndex].score} (was ${previousTotal})`);
   
   return true;
 }
