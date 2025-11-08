@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark background to prevent white flash during transitions */
+html, body, #root {
+  min-height: 100vh;
+}
+
+/* Light mode background */
+html:not(.dark) body,
+html:not(.dark) #root {
+  background-color: #fafafa;
+}
+
+/* Dark mode background */
+html.dark body,
+html.dark #root {
+  background-color: #0f172a;
+}
+
 @keyframes cell-ripple {
   0% {
     transform: scale(1);

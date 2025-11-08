@@ -18,3 +18,6 @@ __pycache__/
 *.pyc
 submissions/
 temp/
+.DS_Store
+*.zip
+*.DS_Store

@@ -11,18 +11,36 @@ export function ThemeToggle() {
   });
 
   useEffect(() => {
-    // Apply theme to document
+    // Apply theme to document immediately without delay
+    const html = document.documentElement;
     if (isDark) {
-      document.documentElement.classList.add("dark");
+      html.classList.add("dark");
+      html.style.colorScheme = "dark";
       localStorage.setItem("theme", "dark");
     } else {
-      document.documentElement.classList.remove("dark");
+      html.classList.remove("dark");
+      html.style.colorScheme = "light";
       localStorage.setItem("theme", "light");
     }
   }, [isDark]);
 
   const toggleTheme = () => {
-    setIsDark(!isDark);
+    // Update state immediately for instant UI update
+    const newIsDark = !isDark;
+    setIsDark(newIsDark);
+    
+    // Apply theme immediately without waiting for React state update
+    // This ensures instant theme switch without lag
+    const html = document.documentElement;
+    if (newIsDark) {
+      html.classList.add("dark");
+      html.style.colorScheme = "dark";
+      localStorage.setItem("theme", "dark");
+    } else {
+      html.classList.remove("dark");
+      html.style.colorScheme = "light";
+      localStorage.setItem("theme", "light");
+    }
   };
 
   return (

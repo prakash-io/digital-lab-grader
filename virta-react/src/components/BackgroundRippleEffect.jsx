@@ -30,35 +30,45 @@ export const BackgroundRippleEffect = ({
 
   return (
     <div className="absolute inset-0 h-full w-full overflow-hidden">
-      {/* Dark bottom section (diagonal from top-left to bottom-right) */}
+      {/* Base background with gradient */}
       <div 
-        className="absolute inset-0 bg-zinc-900 dark:bg-zinc-950 z-[1]"
+        className="absolute inset-0 z-[1] dark:hidden"
         style={{
-          clipPath: 'polygon(0 0, 100% 100%, 0 100%)',
-          WebkitClipPath: 'polygon(0 0, 100% 100%, 0 100%)',
+          background: 'linear-gradient(135deg, rgba(244, 244, 245, 0.4) 0%, rgba(244, 244, 245, 0.2) 40%, rgba(228, 228, 231, 0.6) 60%, rgba(212, 212, 216, 0.8) 100%)',
+        }}
+      />
+      <div 
+        className="absolute inset-0 z-[1] hidden dark:block"
+        style={{
+          background: 'linear-gradient(135deg, rgba(24, 24, 27, 0.3) 0%, rgba(24, 24, 27, 0.5) 40%, rgba(9, 9, 11, 0.7) 60%, rgba(9, 9, 11, 0.9) 100%)',
         }}
       />
       
-      {/* Blurred diagonal partition */}
+      {/* Blurred light overlay */}
       <div 
-        className="absolute inset-0 z-[4] pointer-events-none"
+        className="absolute inset-0 z-[2] pointer-events-none dark:hidden"
         style={{
-          background: 'linear-gradient(135deg, transparent 0%, transparent 48%, rgba(0,0,0,0.5) 49.5%, rgba(0,0,0,0.5) 50.5%, transparent 52%, transparent 100%)',
-          backdropFilter: 'blur(15px)',
-          WebkitBackdropFilter: 'blur(15px)',
-          clipPath: 'polygon(0 0, 100% 100%, 0 100%)',
-          WebkitClipPath: 'polygon(0 0, 100% 100%, 0 100%)',
+          background: 'radial-gradient(ellipse at top right, rgba(255, 255, 255, 0.4) 0%, transparent 60%)',
+          backdropFilter: 'blur(30px)',
+          WebkitBackdropFilter: 'blur(30px)',
+        }}
+      />
+      <div 
+        className="absolute inset-0 z-[2] pointer-events-none hidden dark:block"
+        style={{
+          background: 'radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.2) 0%, transparent 60%)',
+          backdropFilter: 'blur(30px)',
+          WebkitBackdropFilter: 'blur(30px)',
         }}
       />
       
-      {/* Grid section (upper portion - above diagonal from top-left to bottom-right) */}
+      {/* Grid section with blur */}
       <div 
-        className="relative h-full w-full overflow-hidden z-[2]"
+        className="relative h-full w-full overflow-hidden z-[3]"
         style={{
-          clipPath: 'polygon(0 0, 100% 0, 100% 100%)',
-          WebkitClipPath: 'polygon(0 0, 100% 0, 100% 100%)',
           filter: 'blur(4px)',
           WebkitFilter: 'blur(4px)',
+          opacity: 0.6,
         }}
       >
         <div className="relative h-auto w-auto overflow-hidden">
