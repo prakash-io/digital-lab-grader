@@ -303,15 +303,25 @@ export function getLeaderboard() {
   const users = readUsers();
   
   // Filter only students and sort by score (descending)
+  // Ensure all users have score and assignmentScores initialized
   const students = users
     .filter((u) => u.userType === "student" || !u.userType)
-    .map((u) => ({
-      id: u.id,
-      username: u.username,
-      email: u.email,
-      score: u.score || 0,
-      assignmentScores: u.assignmentScores || {},
-    }))
+    .map((u) => {
+      // Initialize score and assignmentScores if not present (for existing users)
+      if (u.score === undefined || u.score === null) {
+        u.score = 0;
+      }
+      if (!u.assignmentScores) {
+        u.assignmentScores = {};
+      }
+      return {
+        id: u.id,
+        username: u.username,
+        email: u.email,
+        score: u.score || 0,
+        assignmentScores: u.assignmentScores || {},
+      };
+    })
     .sort((a, b) => b.score - a.score)
     .map((student, index) => ({
       ...student,
