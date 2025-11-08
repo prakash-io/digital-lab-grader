@@ -46,8 +46,9 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-zinc-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-zinc-200 dark:border-zinc-700"
+      className="fixed top-4 right-4 z-50 p-2.5 sm:p-3 rounded-full bg-white dark:bg-zinc-800 shadow-lg hover:shadow-xl transition-all duration-300 border border-zinc-200 dark:border-zinc-700"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      style={{ width: '44px', height: '44px' }}
     >
       <div className="relative w-6 h-6 flex items-center justify-center">
         {/* Sun Icon - shows in dark mode (to switch to light) */}

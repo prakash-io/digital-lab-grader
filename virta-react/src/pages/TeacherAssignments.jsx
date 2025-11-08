@@ -339,8 +339,8 @@ export default function TeacherAssignments() {
 
       <div className="flex flex-1">
         <div className="flex h-full w-full flex-1 flex-col overflow-y-auto rounded-tl-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
-          <div className="bg-neutral-100 dark:bg-neutral-800/70 px-4 pt-4 pb-4 md:px-6 md:pt-6">
-            <div className="flex items-center justify-between">
+          <div className="bg-neutral-100 dark:bg-neutral-800/70 px-4 pt-16 pb-4 md:px-6 md:pt-20">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => navigate("/instructor-dashboard")}
@@ -362,10 +362,10 @@ export default function TeacherAssignments() {
                     setEditingAssignmentId(null);
                   }
                 }}
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors w-full sm:w-auto shrink-0"
               >
                 <IconPlus className="w-5 h-5" />
-                {showCreateForm ? "Cancel" : "Create Assignment"}
+                <span className="whitespace-nowrap">{showCreateForm ? "Cancel" : "Create Assignment"}</span>
               </button>
             </div>
           </div>
