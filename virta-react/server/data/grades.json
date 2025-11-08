@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "611519c3-a592-47fa-a02c-8a686388f9dc",
+    "studentId": "1762557645784",
+    "grade": null,
+    "runtime": 927,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "eb0ab481-440f-4218-8b01-4607c97d7dc7",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 902,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "555f9c7f-f849-4673-a5d4-fb86d8e1c1b1",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 379.5,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "250cdc54-61d7-4460-9602-4d318beb7269",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 360,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "f1e96b99-3eba-4e16-a6a7-0a60eb4d8af8",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 921,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "481669e5-c2b5-4014-9225-574acf451068",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 339.5,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  }
+]
