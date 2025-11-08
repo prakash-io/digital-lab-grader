@@ -14,7 +14,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../lib/utils";
 import { avatars } from "../utils/avatars";
 
@@ -295,18 +295,20 @@ export default function About() {
       </button>
 
       {/* Contact Modal */}
-      {contactModalOpen && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
-          onClick={() => setContactModalOpen(false)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+      <AnimatePresence>
+        {contactModalOpen && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setContactModalOpen(false)}
           >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+            >
             {/* Modal Header */}
             <div className="sticky top-0 bg-white dark:bg-neutral-800 px-6 py-4 border-b border-purple-200 dark:border-purple-800 flex items-center justify-between rounded-t-2xl">
               <h2 className="text-2xl font-bold text-purple-700 dark:text-purple-300">
@@ -477,9 +479,10 @@ export default function About() {
                 © 2025 Virta. All rights reserved.
               </p>
             </div>
-          </motion.div>
-        </div>
-      )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
