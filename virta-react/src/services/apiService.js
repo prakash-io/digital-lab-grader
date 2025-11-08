@@ -69,28 +69,51 @@ export const assignmentService = {
 // Submissions
 export const submissionService = {
   async createSubmission(submissionData) {
-    const response = await fetch(`${API_BASE_URL}/submissions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(submissionData),
-    });
+    try {
+      const response = await fetch(`${API_BASE_URL}/submissions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(submissionData),
+      });
 
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to create submission");
+      const data = await response.json();
+      if (!response.ok) {
+        // Provide more detailed error messages
+        const errorMessage = data.message || data.error || "Failed to create submission";
+        const error = new Error(errorMessage);
+        error.status = response.status;
+        throw error;
+      }
+      return data;
+    } catch (err) {
+      // Re-throw with more context if it's a network error
+      if (err.name === "TypeError" && err.message.includes("fetch")) {
+        throw new Error("Network error: Could not connect to server. Please check your connection.");
+      }
+      throw err;
     }
-    return data;
   },
 
   async getSubmission(id) {
-    const response = await fetch(`${API_BASE_URL}/submissions/${id}`);
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to get submission");
+    try {
+      const response = await fetch(`${API_BASE_URL}/submissions/${id}`);
+      const data = await response.json();
+      if (!response.ok) {
+        const errorMessage = data.message || data.error || "Failed to get submission";
+        const error = new Error(errorMessage);
+        error.status = response.status;
+        throw error;
+      }
+      return data;
+    } catch (err) {
+      // Re-throw with more context if it's a network error
+      if (err.name === "TypeError" && err.message.includes("fetch")) {
+        throw new Error("Network error: Could not connect to server. Please check your connection.");
+      }
+      throw err;
     }
-    return data;
   },
 
   async getSubmissionsByAssignment(assignmentId) {

@@ -151,16 +151,18 @@ export default function CodeEditor() {
         }
       } catch (err) {
         console.error("Error polling submission:", err);
+        // Don't clear the interval on error - might be temporary network issue
+        // Only clear if it's an auth error (401)
+        if (err.message && err.message.includes("401")) {
+          setIsSubmitting(false);
+          setOutput("Error: Authentication failed. Please refresh the page.");
+          clearInterval(pollInterval);
+        }
       }
     }, 2000); // Poll every 2 seconds
 
     return () => clearInterval(pollInterval);
   }, [submissionId]);
-
-  if (!isAuthenticated) {
-    navigate("/signup");
-    return null;
-  }
 
   const handleLogout = () => {
     logout();
@@ -273,6 +275,11 @@ export default function CodeEditor() {
       return;
     }
 
+    if (!user || !user.id) {
+      setOutput("Error: User not authenticated. Please refresh the page and try again.");
+      return;
+    }
+
     setIsSubmitting(true);
     setGradingResults(null);
     setSubmissionStatus(null);
@@ -287,12 +294,29 @@ export default function CodeEditor() {
         language,
       });
 
-      setSubmissionId(response.submission.id);
-      setSubmissionStatus({ status: "pending", progress: 0 });
-      setOutput("✅ Code submitted successfully! Grading in progress...");
+      // Check if response has results (synchronous processing)
+      if (response.submission && response.submission.status === "graded" && response.submission.results) {
+        // Submission was graded immediately (synchronous processing)
+        setGradingResults(response.submission.results);
+        setSubmissionStatus({ status: "graded", progress: 100 });
+        setOutput("✅ Code submitted and graded successfully!");
+        setIsSubmitting(false);
+      } else {
+        // Submission is being processed asynchronously
+        setSubmissionId(response.submission.id);
+        setSubmissionStatus({ status: response.submission.status || "pending", progress: 0 });
+        setOutput("✅ Code submitted successfully! Grading in progress...");
+      }
     } catch (err) {
-      setOutput("Error: " + err.message);
+      console.error("Submission error:", err);
+      // Don't navigate away on error - just show error message
+      setOutput(`Error: ${err.message || "Failed to submit code. Please try again."}`);
       setIsSubmitting(false);
+      
+      // Check if it's an auth error
+      if (err.message && (err.message.includes("401") || err.message.includes("Unauthorized"))) {
+        setOutput("Error: Authentication failed. Please refresh the page and log in again.");
+      }
     }
   };
 
@@ -527,7 +551,9 @@ export default function CodeEditor() {
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-700 dark:text-gray-300">Efficiency:</span>
                               <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
-                                {gradingResults.scores?.efficiency?.toFixed(2) || "0"}/3
+                                {(typeof gradingResults.scores?.efficiency === 'object' 
+                                  ? gradingResults.scores.efficiency.score?.toFixed(2)
+                                  : gradingResults.scores?.efficiency?.toFixed(2)) || "0"}/3
                               </span>
                             </div>
                             <div className="flex justify-between">
