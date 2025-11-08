@@ -539,7 +539,18 @@ export default function CodeEditor() {
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-700 dark:text-gray-300">Total Score:</span>
                               <span className="text-lg font-bold text-purple-600 dark:text-purple-400">
-                                {gradingResults.scores?.total?.toFixed(2) || "0"}/10
+                                {(gradingResults.scores?.total !== null && gradingResults.scores?.total !== undefined) 
+                                  ? gradingResults.scores.total.toFixed(2) 
+                                  : (gradingResults.scores?.correctness !== undefined && 
+                                      gradingResults.scores?.efficiency !== undefined && 
+                                      gradingResults.scores?.codeQuality !== undefined
+                                      ? (gradingResults.scores.correctness + 
+                                         (typeof gradingResults.scores.efficiency === 'object' 
+                                           ? gradingResults.scores.efficiency.score 
+                                           : gradingResults.scores.efficiency) + 
+                                         gradingResults.scores.codeQuality).toFixed(2)
+                                      : "0")
+                                }/10
                               </span>
                             </div>
                             <div className="flex justify-between">
