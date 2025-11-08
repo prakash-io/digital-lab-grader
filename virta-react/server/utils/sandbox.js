@@ -85,14 +85,14 @@ export async function runCodeInSandbox({ code, language, input, timeLimit, memor
       throw new Error(`Failed to parse sandbox response: ${parseError.message}`);
     }
 
-    // Check for compilation or runtime errors
-    if (data.compile && data.compile.stderr) {
+    // Check for compilation errors (compile.code !== 0 indicates failure)
+    if (data.compile && data.compile.code !== 0 && data.compile.code !== undefined) {
       return {
         success: false,
         error: "Compilation error",
         stdout: "",
-        stderr: data.compile.stderr,
-        exitCode: data.compile.code || -1,
+        stderr: data.compile.stderr || data.compile.stdout || "Compilation failed",
+        exitCode: data.compile.code,
         executionTime: executionTime,
         compileTime: data.compile.time || 0,
         runTime: 0,
@@ -100,19 +100,9 @@ export async function runCodeInSandbox({ code, language, input, timeLimit, memor
       };
     }
 
-    if (data.run && data.run.code !== 0) {
-      return {
-        success: false,
-        error: "Runtime error",
-        stdout: data.run.stdout || "",
-        stderr: data.run.stderr || "",
-        exitCode: data.run.code || -1,
-        executionTime: executionTime,
-        compileTime: data.compile?.time || 0,
-        runTime: data.run.time || 0,
-        memory: data.run.memory || 0,
-      };
-    }
+    // Check if run failed (non-zero exit code usually indicates error)
+    // But we still return the output in case the program intentionally exits with non-zero
+    // The comparison logic will determine if the output matches expected
 
     return {
       success: true,
