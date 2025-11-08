@@ -85,10 +85,39 @@ export async function runCodeInSandbox({ code, language, input, timeLimit, memor
       throw new Error(`Failed to parse sandbox response: ${parseError.message}`);
     }
 
+    // Check for compilation or runtime errors
+    if (data.compile && data.compile.stderr) {
+      return {
+        success: false,
+        error: "Compilation error",
+        stdout: "",
+        stderr: data.compile.stderr,
+        exitCode: data.compile.code || -1,
+        executionTime: executionTime,
+        compileTime: data.compile.time || 0,
+        runTime: 0,
+        memory: 0,
+      };
+    }
+
+    if (data.run && data.run.code !== 0) {
+      return {
+        success: false,
+        error: "Runtime error",
+        stdout: data.run.stdout || "",
+        stderr: data.run.stderr || "",
+        exitCode: data.run.code || -1,
+        executionTime: executionTime,
+        compileTime: data.compile?.time || 0,
+        runTime: data.run.time || 0,
+        memory: data.run.memory || 0,
+      };
+    }
+
     return {
       success: true,
       stdout: data.run?.stdout || "",
-      stderr: data.run?.stderr || "",
+      stderr: data.run?.stderr || data.compile?.stderr || "",
       exitCode: data.run?.code || 0,
       executionTime: executionTime,
       compileTime: data.compile?.time || 0,
