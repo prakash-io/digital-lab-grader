@@ -7,7 +7,7 @@ import {
   updateSubmission,
 } from "../utils/dataStorage.js";
 import { submissionSchema } from "../utils/validation.js";
-import { submissionQueue, setJobStatus } from "../utils/jobQueue.js";
+import { submissionQueue, setJobStatus, isQueueReady } from "../utils/jobQueue.js";
 import { getAssignmentById } from "../utils/dataStorage.js";
 import { v4 as uuidv4 } from "uuid";
 import { runCodeInSandbox, compareOutputs } from "../utils/sandbox.js";
@@ -221,8 +221,6 @@ router.post("/", async (req, res) => {
     // Enqueue job for grading
     try {
       // Check if queue is available (Redis)
-      const { isQueueReady } = await import("../utils/jobQueue.js");
-      
       if (submissionQueue && typeof submissionQueue.add === "function" && isQueueReady()) {
         try {
           const job = await submissionQueue.add("grade-submission", {
