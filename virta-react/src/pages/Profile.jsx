@@ -6,7 +6,7 @@ import { Sidebar, SidebarBody, SidebarLink } from "../components/ui/sidebar";
 import {
   IconArrowLeft,
   IconBrandTabler,
-  IconSettings,
+  IconInfoCircle,
   IconShoppingBag,
   IconTrophy,
   IconUser,
@@ -360,10 +360,10 @@ export default function Profile() {
       ),
     },
     {
-      label: "Settings",
-      href: "#",
+      label: "About Us",
+      href: "/about",
       icon: (
-        <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconInfoCircle className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {

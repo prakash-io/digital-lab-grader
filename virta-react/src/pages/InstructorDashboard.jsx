@@ -7,7 +7,7 @@ import { Card, CardTitle, CardDescription } from "../components/ui/card-hover-ef
 import {
   IconArrowLeft,
   IconBrandTabler,
-  IconSettings,
+  IconInfoCircle,
   IconUsers,
   IconFileText,
   IconClipboardCheck,
@@ -155,10 +155,10 @@ export default function InstructorDashboard() {
       ),
     },
     {
-      label: "Settings",
-      href: "#",
+      label: "About Us",
+      href: "/about",
       icon: (
-        <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconInfoCircle className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {

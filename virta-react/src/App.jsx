@@ -13,6 +13,7 @@ import CodeEditor from "./pages/CodeEditor";
 import Leaderboard from "./pages/Leaderboard";
 import Profile from "./pages/Profile";
 import Store from "./pages/Store";
+import About from "./pages/About";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
 
@@ -195,6 +196,14 @@ function AnimatedRoutes() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <ProtectedRoute>
+                  <About />
                 </ProtectedRoute>
               }
             />
