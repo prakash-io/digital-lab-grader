@@ -34,7 +34,8 @@ server/data/*.json
 server/.env
 server/node_modules
 
-# README files
+# README files - exclude from git
 README*.md
 **/README*.md
-!README.md
+*.md
+!LICENSE
