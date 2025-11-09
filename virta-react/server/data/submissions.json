@@ -573,5 +573,365 @@
     "runtime": 891,
     "graded": true,
     "grade": 100
+  },
+  {
+    "id": "d810b6be-ebd8-4033-8fe7-c012ad7efd10",
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "studentId": "1762557645784",
+    "studentName": "prak123",
+    "code": "import sys\n\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit(0)\n\nN = int(data[0])\nA = list(map(int, data[1:1+N]))\nB = list(map(int, data[1+N:1+2*N]))\n\nA.sort()\nB.sort()\n\nprint(sum(abs(A[i] - B[i]) for i in range(N)))\n",
+    "language": "python",
+    "status": "graded",
+    "submittedAt": "2025-11-08T12:13:57.253Z",
+    "results": {
+      "publicTestResults": [
+        {
+          "testCaseIndex": 0,
+          "input": "4\n4 1 8 7\n2 3 6 5",
+          "expectedOutput": "6",
+          "actualOutput": "6\n",
+          "passed": true,
+          "executionTime": 814,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 4
+        },
+        {
+          "testCaseIndex": 1,
+          "input": "3\n4 1 2\n2 4 1",
+          "expectedOutput": "0",
+          "actualOutput": "0\n",
+          "passed": true,
+          "executionTime": 897,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 3
+        }
+      ],
+      "hiddenTestResults": [],
+      "complexity": "O(1)",
+      "scores": {
+        "correctness": 6,
+        "efficiency": {
+          "score": 3,
+          "complexity": "O(1)",
+          "runtimeFactor": 1
+        },
+        "codeQuality": 1,
+        "total": 10
+      },
+      "feedback": {
+        "correctness": "Passed 2/2 public tests and 0/0 hidden tests",
+        "efficiency": "Complexity: O(1). Efficiency score based on algorithm analysis.",
+        "codeQuality": "Code quality looks good"
+      },
+      "status": "completed",
+      "gradedAt": "2025-11-08T12:13:58.971Z"
+    },
+    "error": null,
+    "updatedAt": "2025-11-08T12:13:58.971Z",
+    "runtime": 855.5,
+    "graded": true,
+    "grade": 100
+  },
+  {
+    "id": "bbd36478-60f4-4aac-907f-1c7cd30f274a",
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "studentId": "1762557645784",
+    "studentName": "prak123",
+    "code": "import sys\n\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit(0)\n\nN = int(data[0])\nA = list(map(int, data[1:1+N]))\nB = list(map(int, data[1+N:1+2*N]))\n\nA.sort()\nB.sort()\n\nprint(sum(abs(A[i] - B[i]) for i in range(N)))\n",
+    "language": "python",
+    "status": "graded",
+    "submittedAt": "2025-11-08T12:42:48.942Z",
+    "results": {
+      "publicTestResults": [
+        {
+          "testCaseIndex": 0,
+          "input": "4\n4 1 8 7\n2 3 6 5",
+          "expectedOutput": "6",
+          "actualOutput": "6\n",
+          "passed": true,
+          "executionTime": 332,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 4
+        },
+        {
+          "testCaseIndex": 1,
+          "input": "3\n4 1 2\n2 4 1",
+          "expectedOutput": "0",
+          "actualOutput": "0\n",
+          "passed": true,
+          "executionTime": 321,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 3
+        }
+      ],
+      "hiddenTestResults": [],
+      "complexity": "O(1)",
+      "scores": {
+        "correctness": 6,
+        "efficiency": {
+          "score": 3,
+          "complexity": "O(1)",
+          "runtimeFactor": 1
+        },
+        "codeQuality": 1,
+        "total": 10
+      },
+      "feedback": {
+        "correctness": "Passed 2/2 public tests and 0/0 hidden tests",
+        "efficiency": "Complexity: O(1). Efficiency score based on algorithm analysis.",
+        "codeQuality": "Code quality looks good"
+      },
+      "status": "completed",
+      "gradedAt": "2025-11-08T12:42:49.602Z"
+    },
+    "error": null,
+    "updatedAt": "2025-11-08T12:42:49.603Z",
+    "runtime": 326.5,
+    "graded": true,
+    "grade": 100
+  },
+  {
+    "id": "8ddda4b7-dd7b-4224-83ca-13b175ad59e8",
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "studentId": "1762557645784",
+    "studentName": "prak123",
+    "code": "import sys\n\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit(0)\n\nN = int(data[0])\nA = list(map(int, data[1:1+N]))\nB = list(map(int, data[1+N:1+2*N]))\n\nA.sort()\nB.sort()\n\nprint(sum(abs(A[i] - B[i]) for i in range(N)))\n",
+    "language": "python",
+    "status": "graded",
+    "submittedAt": "2025-11-08T12:55:59.431Z",
+    "results": {
+      "publicTestResults": [
+        {
+          "testCaseIndex": 0,
+          "input": "4\n4 1 8 7\n2 3 6 5",
+          "expectedOutput": "6",
+          "actualOutput": "6\n",
+          "passed": true,
+          "executionTime": 856,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 4
+        },
+        {
+          "testCaseIndex": 1,
+          "input": "3\n4 1 2\n2 4 1",
+          "expectedOutput": "0",
+          "actualOutput": "0\n",
+          "passed": true,
+          "executionTime": 3101,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 3
+        }
+      ],
+      "hiddenTestResults": [],
+      "complexity": "O(1)",
+      "scores": {
+        "correctness": 6,
+        "efficiency": {
+          "score": 3,
+          "complexity": "O(1)",
+          "runtimeFactor": 1
+        },
+        "codeQuality": 1,
+        "total": 10
+      },
+      "feedback": {
+        "correctness": "Passed 2/2 public tests and 0/0 hidden tests",
+        "efficiency": "Complexity: O(1). Efficiency score based on algorithm analysis.",
+        "codeQuality": "Code quality looks good"
+      },
+      "status": "completed",
+      "gradedAt": "2025-11-08T12:56:03.394Z"
+    },
+    "error": null,
+    "updatedAt": "2025-11-08T12:56:03.395Z",
+    "runtime": 1978.5,
+    "graded": true,
+    "grade": 100
+  },
+  {
+    "id": "a26d9f51-0b19-4664-ad97-8e1482c5cf3f",
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "studentId": "1762557645784",
+    "studentName": "prak123",
+    "code": "import sys\n\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit(0)\n\nN = int(data[0])\nA = list(map(int, data[1:1+N]))\nB = list(map(int, data[1+N:1+2*N]))\n\nA.sort()\nB.sort()\n\nprint(sum(abs(A[i] - B[i]) for i in range(N)))\n",
+    "language": "python",
+    "status": "graded",
+    "submittedAt": "2025-11-08T14:30:55.855Z",
+    "results": {
+      "publicTestResults": [
+        {
+          "testCaseIndex": 0,
+          "input": "4\n4 1 8 7\n2 3 6 5",
+          "expectedOutput": "6",
+          "actualOutput": "6\n",
+          "passed": true,
+          "executionTime": 980,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 4
+        },
+        {
+          "testCaseIndex": 1,
+          "input": "3\n4 1 2\n2 4 1",
+          "expectedOutput": "0",
+          "actualOutput": "0\n",
+          "passed": true,
+          "executionTime": 916,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 3
+        }
+      ],
+      "hiddenTestResults": [],
+      "complexity": "O(1)",
+      "scores": {
+        "correctness": 6,
+        "efficiency": {
+          "score": 3,
+          "complexity": "O(1)",
+          "runtimeFactor": 1
+        },
+        "codeQuality": 1,
+        "total": 10
+      },
+      "feedback": {
+        "correctness": "Passed 2/2 public tests and 0/0 hidden tests",
+        "efficiency": "Complexity: O(1). Efficiency score based on algorithm analysis.",
+        "codeQuality": "Code quality looks good"
+      },
+      "status": "completed",
+      "gradedAt": "2025-11-08T14:30:57.757Z"
+    },
+    "error": null,
+    "updatedAt": "2025-11-08T14:30:57.758Z",
+    "runtime": 948,
+    "graded": true,
+    "grade": 100
+  },
+  {
+    "id": "47ae646a-f61a-4061-aefe-1649deb8ff60",
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "studentId": "1762557645784",
+    "studentName": "prak123",
+    "code": "import sys\n\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit(0)\n\nN = int(data[0])\nA = list(map(int, data[1:1+N]))\nB = list(map(int, data[1+N:1+2*N]))\n\nA.sort()\nB.sort()\n\nprint(sum(abs(A[i] - B[i]) for i in range(N)))\n",
+    "language": "python",
+    "status": "graded",
+    "submittedAt": "2025-11-08T18:18:43.553Z",
+    "results": {
+      "publicTestResults": [
+        {
+          "testCaseIndex": 0,
+          "input": "4\n4 1 8 7\n2 3 6 5",
+          "expectedOutput": "6",
+          "actualOutput": "6\n",
+          "passed": true,
+          "executionTime": 1045,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 4
+        },
+        {
+          "testCaseIndex": 1,
+          "input": "3\n4 1 2\n2 4 1",
+          "expectedOutput": "0",
+          "actualOutput": "0\n",
+          "passed": true,
+          "executionTime": 2623,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 3
+        }
+      ],
+      "hiddenTestResults": [],
+      "complexity": "O(1)",
+      "scores": {
+        "correctness": 6,
+        "efficiency": {
+          "score": 3,
+          "complexity": "O(1)",
+          "runtimeFactor": 1
+        },
+        "codeQuality": 1,
+        "total": 10
+      },
+      "feedback": {
+        "correctness": "Passed 2/2 public tests and 0/0 hidden tests",
+        "efficiency": "Complexity: O(1). Efficiency score based on algorithm analysis.",
+        "codeQuality": "Code quality looks good"
+      },
+      "status": "completed",
+      "gradedAt": "2025-11-08T18:18:47.231Z"
+    },
+    "error": null,
+    "updatedAt": "2025-11-08T18:18:47.232Z",
+    "runtime": 1834,
+    "graded": true,
+    "grade": 100
+  },
+  {
+    "id": "4839ec89-7039-4150-a97b-b102a055f71e",
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "studentId": "1762557645784",
+    "studentName": "prak123",
+    "code": "import sys\n\ndata = sys.stdin.read().strip().split()\nif not data:\n    sys.exit(0)\n\nN = int(data[0])\nA = list(map(int, data[1:1+N]))\nB = list(map(int, data[1+N:1+2*N]))\n\nA.sort()\nB.sort()\n\nprint(sum(abs(A[i] - B[i]) for i in range(N)))\n",
+    "language": "python",
+    "status": "graded",
+    "submittedAt": "2025-11-09T08:06:33.727Z",
+    "results": {
+      "publicTestResults": [
+        {
+          "testCaseIndex": 0,
+          "input": "4\n4 1 8 7\n2 3 6 5",
+          "expectedOutput": "6",
+          "actualOutput": "6\n",
+          "passed": true,
+          "executionTime": 936,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 4
+        },
+        {
+          "testCaseIndex": 1,
+          "input": "3\n4 1 2\n2 4 1",
+          "expectedOutput": "0",
+          "actualOutput": "0\n",
+          "passed": true,
+          "executionTime": 863,
+          "stderr": "",
+          "exitCode": 0,
+          "scale": 3
+        }
+      ],
+      "hiddenTestResults": [],
+      "complexity": "O(1)",
+      "scores": {
+        "correctness": 6,
+        "efficiency": {
+          "score": 3,
+          "complexity": "O(1)",
+          "runtimeFactor": 1
+        },
+        "codeQuality": 1,
+        "total": 10
+      },
+      "feedback": {
+        "correctness": "Passed 2/2 public tests and 0/0 hidden tests",
+        "efficiency": "Complexity: O(1). Efficiency score based on algorithm analysis.",
+        "codeQuality": "Code quality looks good"
+      },
+      "status": "completed",
+      "gradedAt": "2025-11-09T08:06:35.531Z"
+    },
+    "error": null,
+    "updatedAt": "2025-11-09T08:06:35.532Z",
+    "runtime": 899.5,
+    "graded": true,
+    "grade": 100
   }
 ]

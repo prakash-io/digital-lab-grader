@@ -79,5 +79,59 @@
     "runtime": 891,
     "teacherId": "1762564882504",
     "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "d810b6be-ebd8-4033-8fe7-c012ad7efd10",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 855.5,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "bbd36478-60f4-4aac-907f-1c7cd30f274a",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 326.5,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "8ddda4b7-dd7b-4224-83ca-13b175ad59e8",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 1978.5,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "a26d9f51-0b19-4664-ad97-8e1482c5cf3f",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 948,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "47ae646a-f61a-4061-aefe-1649deb8ff60",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 1834,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
+  },
+  {
+    "assignmentId": "0cb03af9-fad8-4644-a3af-106b372e550d",
+    "submissionId": "4839ec89-7039-4150-a97b-b102a055f71e",
+    "studentId": "1762557645784",
+    "grade": 100,
+    "runtime": 899.5,
+    "teacherId": "1762564882504",
+    "feedback": "{\"correctness\":\"Passed 2/2 public tests and 0/0 hidden tests\",\"efficiency\":\"Complexity: O(1). Efficiency score based on algorithm analysis.\",\"codeQuality\":\"Code quality looks good\"}"
   }
 ]
