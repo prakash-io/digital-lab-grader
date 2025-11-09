@@ -15,6 +15,15 @@ import leaderboardRoutes from "./routes/leaderboard.js";
 // Load environment variables
 dotenv.config();
 
+// Validate critical environment variables
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET === "your-secret-key-change-in-production" || JWT_SECRET.includes("your-secret-key")) {
+  console.error("❌ ERROR: JWT_SECRET is not set or is using default value!");
+  console.error("   Please set JWT_SECRET in Railway environment variables.");
+  console.error("   Generate one with: openssl rand -base64 32");
+  console.error("   Server will start but authentication will fail!");
+}
+
 // Try to start worker (requires Redis) - use dynamic import
 import("./workers/submissionWorker.js").catch((err) => {
   console.warn("⚠️  Worker not started (Redis may not be available):", err.message);
@@ -134,8 +143,18 @@ io.on("connection", (socket) => {
 // Export io for use in routes
 app.locals.io = io;
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+// Start server - bind to 0.0.0.0 for Railway deployment
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server is running on http://0.0.0.0:${PORT}`);
   console.log(`📡 WebSocket server is ready`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔑 JWT_SECRET: ${process.env.JWT_SECRET ? 'Set' : 'NOT SET - Authentication will fail!'}`);
+  console.log(`🌐 CORS Origins: ${corsOrigins.join(', ')}`);
+}).on('error', (err) => {
+  console.error('❌ Server failed to start:', err);
+  if (err.code === 'EADDRINUSE') {
+    console.error(`   Port ${PORT} is already in use`);
+  }
+  process.exit(1);
 });
 
