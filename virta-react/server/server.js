@@ -65,6 +65,16 @@ app.options('*', cors());
 
 app.use(express.json());
 
+// Health check - place early for easy access
+app.get("/api/health", (req, res) => {
+  res.json({ 
+    status: "ok", 
+    message: "VirTA Backend API is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development"
+  });
+});
+
 // Root route
 app.get("/", (req, res) => {
   res.json({ 
@@ -93,11 +103,6 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/grades", gradeRoutes);
 app.use("/api/run-public", runPublicRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
-
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", message: "VirTA Backend API is running" });
-});
 
 // WebSocket connection handling
 io.on("connection", (socket) => {
