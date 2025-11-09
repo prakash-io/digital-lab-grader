@@ -1,7 +1,20 @@
 import { io } from "socket.io-client";
 
 // Socket.IO connection URL - uses environment variable or falls back to localhost
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:3001";
+const getSocketUrl = () => {
+  const socketUrl = import.meta.env.VITE_SOCKET_URL;
+  if (socketUrl && socketUrl.trim()) {
+    return socketUrl.trim().replace(/\/$/, '');
+  }
+  // Fallback to API URL if Socket URL not set
+  const apiUrl = import.meta.env.VITE_API_URL;
+  if (apiUrl && apiUrl.trim()) {
+    return apiUrl.trim().replace(/\/$/, '');
+  }
+  return "http://localhost:3001";
+};
+
+const SOCKET_URL = getSocketUrl();
 
 let socket = null;
 

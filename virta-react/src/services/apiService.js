@@ -1,7 +1,14 @@
 // Base API URL - uses environment variable or falls back to localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api`
-  : "http://localhost:3001/api";
+const getApiBaseUrl = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  if (apiUrl && apiUrl.trim()) {
+    const cleanUrl = apiUrl.trim().replace(/\/$/, '');
+    return `${cleanUrl}/api`;
+  }
+  return "http://localhost:3001/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Assignments
 export const assignmentService = {
