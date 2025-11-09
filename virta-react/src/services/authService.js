@@ -1,7 +1,21 @@
 // Base API URL - uses environment variable or falls back to localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api/auth`
-  : "http://localhost:3001/api/auth";
+const getApiBaseUrl = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  if (apiUrl) {
+    // Remove trailing slash if present
+    const cleanUrl = apiUrl.replace(/\/$/, '');
+    return `${cleanUrl}/api/auth`;
+  }
+  // Fallback to localhost for development
+  if (import.meta.env.MODE === 'development') {
+    return "http://localhost:3001/api/auth";
+  }
+  // In production, throw error if no API URL is set
+  console.error('VITE_API_URL is not set! Please configure it in Vercel environment variables.');
+  throw new Error('Backend API URL is not configured. Please set VITE_API_URL environment variable.');
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export const authService = {
   async signup(username, email, password, userType = 'student') {
