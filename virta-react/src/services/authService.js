@@ -1,9 +1,13 @@
-// Base API URL - uses environment variable or falls back to localhost
+// Base API URL - uses environment variable or falls back to domain/localhost
 const getApiBaseUrl = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   if (apiUrl && apiUrl.trim()) {
     const cleanUrl = apiUrl.trim().replace(/\/$/, '');
     return `${cleanUrl}/api/auth`;
+  }
+  // In production (e.g. Vercel deployment), point to same origin /api/auth if not on localhost
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return `${window.location.origin}/api/auth`;
   }
   return "http://localhost:3001/api/auth";
 };

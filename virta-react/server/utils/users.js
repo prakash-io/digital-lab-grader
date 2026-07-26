@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -6,30 +6,70 @@ import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const USERS_FILE = join(__dirname, "../data/users.json");
+const getUsersFilePath = () => {
+  if (process.env.VERCEL) {
+    const tmpPath = "/tmp/users.json";
+    if (!existsSync(tmpPath)) {
+      const origPath = join(__dirname, "../data/users.json");
+      if (existsSync(origPath)) {
+        try {
+          writeFileSync(tmpPath, readFileSync(origPath, "utf8"));
+        } catch (e) {
+          writeFileSync(tmpPath, "[]");
+        }
+      } else {
+        writeFileSync(tmpPath, "[]");
+      }
+    }
+    return tmpPath;
+  }
+  const dataDir = join(__dirname, "../data");
+  if (!existsSync(dataDir)) {
+    try { mkdirSync(dataDir, { recursive: true }); } catch (e) {}
+  }
+  return join(dataDir, "users.json");
+};
+
+let memoryUsers = [];
 
 // Initialize users file if it doesn't exist
-if (!existsSync(USERS_FILE)) {
-  writeFileSync(USERS_FILE, JSON.stringify([], null, 2));
+try {
+  const file = getUsersFilePath();
+  if (!existsSync(file)) {
+    writeFileSync(file, JSON.stringify([], null, 2));
+  }
+} catch (e) {
+  console.warn("Using memory storage for users:", e.message);
 }
 
-// Read users from file
+// Read users from file or memory fallback
 export function readUsers() {
   try {
-    const data = readFileSync(USERS_FILE, "utf8");
-    return JSON.parse(data);
+    const file = getUsersFilePath();
+    if (existsSync(file)) {
+      const data = readFileSync(file, "utf8");
+      memoryUsers = JSON.parse(data);
+      return memoryUsers;
+    }
+    return memoryUsers;
   } catch (error) {
     console.error("Error reading users:", error);
-    return [];
+    return memoryUsers;
   }
 }
 
-// Save user to file
+// Save user
 export function saveUser(user) {
   try {
     const users = readUsers();
     users.push(user);
-    writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    memoryUsers = users;
+    try {
+      const file = getUsersFilePath();
+      writeFileSync(file, JSON.stringify(users, null, 2));
+    } catch (e) {
+      console.warn("Could not write users to disk, using memory fallback");
+    }
     return true;
   } catch (error) {
     console.error("Error saving user:", error);
@@ -80,7 +120,11 @@ export function updateUser(userId, updates) {
       return false;
     }
     users[userIndex] = { ...users[userIndex], ...updates };
-    writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    memoryUsers = users;
+    try {
+      const file = getUsersFilePath();
+      writeFileSync(file, JSON.stringify(users, null, 2));
+    } catch (e) {}
     return true;
   } catch (error) {
     console.error("Error updating user:", error);
@@ -88,14 +132,13 @@ export function updateUser(userId, updates) {
   }
 }
 
-// Save or update user from social auth provider (Google, GitHub, Facebook, LinkedIn)
+// Save or update user from social auth provider
 export function saveOrUpdateSocialUser({ provider, email, name, avatarUrl, userType }) {
   try {
     const users = readUsers();
     const cleanEmail = email ? email.toLowerCase().trim() : "";
     const cleanName = name ? name.trim() : "User";
     
-    // Check existing user by email
     let user = users.find((u) => u.email && u.email.toLowerCase().trim() === cleanEmail);
     
     if (user) {
@@ -106,7 +149,6 @@ export function saveOrUpdateSocialUser({ provider, email, name, avatarUrl, userT
       return user;
     }
 
-    // Generate unique username from name/email
     let baseUsername = (cleanName.replace(/\s+/g, '_').toLowerCase() || cleanEmail.split('@')[0] || "user");
     let username = baseUsername;
     let counter = 1;
