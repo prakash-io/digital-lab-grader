@@ -20,7 +20,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// Health check endpoint
+// Handle root and health endpoints
 app.get(["/api/health", "/health"], (req, res) => {
   res.json({
     status: "ok",
@@ -39,4 +39,6 @@ app.use(["/api/grades", "/grades"], gradeRoutes);
 app.use(["/api/run-public", "/run-public"], runPublicRoutes);
 app.use(["/api/leaderboard", "/leaderboard"], leaderboardRoutes);
 
-export default app;
+export default function handler(req, res) {
+  return app(req, res);
+}
