@@ -21,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 
 // Health check endpoint
-app.get("/api/health", (req, res) => {
+app.get(["/api/health", "/health"], (req, res) => {
   res.json({
     status: "ok",
     message: "VirTA Backend API is running on Vercel",
@@ -30,13 +30,13 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/assignments", assignmentRoutes);
-app.use("/api/submissions", submissionRoutes);
-app.use("/api/announcements", announcementRoutes);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/grades", gradeRoutes);
-app.use("/api/run-public", runPublicRoutes);
-app.use("/api/leaderboard", leaderboardRoutes);
+app.use(["/api/auth", "/auth"], authRoutes);
+app.use(["/api/assignments", "/assignments"], assignmentRoutes);
+app.use(["/api/submissions", "/submissions"], submissionRoutes);
+app.use(["/api/announcements", "/announcements"], announcementRoutes);
+app.use(["/api/notifications", "/notifications"], notificationRoutes);
+app.use(["/api/grades", "/grades"], gradeRoutes);
+app.use(["/api/run-public", "/run-public"], runPublicRoutes);
+app.use(["/api/leaderboard", "/leaderboard"], leaderboardRoutes);
 
 export default app;
