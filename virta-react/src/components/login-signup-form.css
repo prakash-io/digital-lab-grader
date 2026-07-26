@@ -192,6 +192,14 @@ html.dark .forgot-link a {
     justify-content: center;
 }
 
+.social-icons button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
 .social-icons a {
     display: inline-flex;
     padding: 10px;

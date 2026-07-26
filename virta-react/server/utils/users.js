@@ -24,7 +24,7 @@ export function readUsers() {
   }
 }
 
-// Save users to file
+// Save user to file
 export function saveUser(user) {
   try {
     const users = readUsers();
@@ -37,16 +37,32 @@ export function saveUser(user) {
   }
 }
 
-// Find user by username
+// Find user by username (case-insensitive)
 export function findUserByUsername(username) {
+  if (!username) return null;
+  const lower = username.toLowerCase().trim();
   const users = readUsers();
-  return users.find((user) => user.username === username);
+  return users.find((user) => user.username && user.username.toLowerCase().trim() === lower);
 }
 
-// Find user by email
+// Find user by email (case-insensitive)
 export function findUserByEmail(email) {
+  if (!email) return null;
+  const lower = email.toLowerCase().trim();
   const users = readUsers();
-  return users.find((user) => user.email === email);
+  return users.find((user) => user.email && user.email.toLowerCase().trim() === lower);
+}
+
+// Find user by username or email (case-insensitive identifier)
+export function findUserByIdentifier(identifier) {
+  if (!identifier) return null;
+  const lower = identifier.toLowerCase().trim();
+  const users = readUsers();
+  return users.find(
+    (user) =>
+      (user.username && user.username.toLowerCase().trim() === lower) ||
+      (user.email && user.email.toLowerCase().trim() === lower)
+  );
 }
 
 // Find user by ID
@@ -72,8 +88,54 @@ export function updateUser(userId, updates) {
   }
 }
 
+// Save or update user from social auth provider (Google, GitHub, Facebook, LinkedIn)
+export function saveOrUpdateSocialUser({ provider, email, name, avatarUrl, userType }) {
+  try {
+    const users = readUsers();
+    const cleanEmail = email ? email.toLowerCase().trim() : "";
+    const cleanName = name ? name.trim() : "User";
+    
+    // Check existing user by email
+    let user = users.find((u) => u.email && u.email.toLowerCase().trim() === cleanEmail);
+    
+    if (user) {
+      user.avatarUrl = avatarUrl || user.avatarUrl;
+      user.provider = provider;
+      user.lastLoginAt = new Date().toISOString();
+      updateUser(user.id, user);
+      return user;
+    }
+
+    // Generate unique username from name/email
+    let baseUsername = (cleanName.replace(/\s+/g, '_').toLowerCase() || cleanEmail.split('@')[0] || "user");
+    let username = baseUsername;
+    let counter = 1;
+    while (users.some((u) => u.username && u.username.toLowerCase() === username.toLowerCase())) {
+      username = `${baseUsername}_${counter}`;
+      counter++;
+    }
+
+    const newUser = {
+      id: Date.now().toString(),
+      username,
+      email: cleanEmail,
+      userType: userType === 'instructor' ? 'instructor' : 'student',
+      avatarUrl: avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanName)}&background=7494ec&color=fff`,
+      provider: provider || 'social',
+      score: 0,
+      createdAt: new Date().toISOString(),
+      lastLoginAt: new Date().toISOString(),
+    };
+
+    saveUser(newUser);
+    return newUser;
+  } catch (error) {
+    console.error("Error saving social user:", error);
+    return null;
+  }
+}
+
 // Get all users
 export function getAllUsers() {
   return readUsers();
 }
-

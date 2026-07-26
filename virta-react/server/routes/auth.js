@@ -1,15 +1,26 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { readUsers, saveUser, findUserByUsername, findUserByEmail } from "../utils/users.js";
+import { 
+  readUsers, 
+  saveUser, 
+  findUserByUsername, 
+  findUserByEmail, 
+  findUserByIdentifier,
+  saveOrUpdateSocialUser 
+} from "../utils/users.js";
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const getSecret = () => process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
 // Signup endpoint
 router.post("/signup", async (req, res) => {
   try {
-    const { username, email, password, userType } = req.body;
+    let { username, email, password, userType } = req.body;
+
+    username = username ? username.trim() : "";
+    email = email ? email.trim().toLowerCase() : "";
+    password = password ? password.trim() : "";
 
     // Validation
     if (!username || !email || !password) {
@@ -26,17 +37,22 @@ router.post("/signup", async (req, res) => {
       });
     }
 
-    // Default to 'student' if userType is not provided
-    const finalUserType = userType === 'instructor' ? 'instructor' : 'student';
-
-    // Check if user already exists
-    const existingUser = findUserByUsername(username) || findUserByEmail(email);
-    if (existingUser) {
+    // Check if username or email already exists
+    if (findUserByUsername(username)) {
       return res.status(400).json({ 
         success: false, 
-        message: "Username or email already exists" 
+        message: "Username is already taken" 
       });
     }
+
+    if (findUserByEmail(email)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Email is already registered" 
+      });
+    }
+
+    const finalUserType = userType === 'instructor' ? 'instructor' : 'student';
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -48,7 +64,7 @@ router.post("/signup", async (req, res) => {
       email,
       password: hashedPassword,
       userType: finalUserType,
-      score: 0, // Initial score is 0
+      score: 0,
       createdAt: new Date().toISOString(),
     };
 
@@ -58,7 +74,7 @@ router.post("/signup", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: newUser.id, username: newUser.username, userType: newUser.userType },
-      JWT_SECRET,
+      getSecret(),
       { expiresIn: "7d" }
     );
 
@@ -77,46 +93,56 @@ router.post("/signup", async (req, res) => {
     console.error("Signup error:", error);
     res.status(500).json({ 
       success: false, 
-      message: "Internal server error" 
+      message: "Internal server error during signup" 
     });
   }
 });
 
-// Login endpoint
+// Login endpoint (supports username OR email)
 router.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    let { username, password } = req.body;
+
+    const identifier = username ? username.trim() : "";
+    const cleanPassword = password ? password.trim() : "";
 
     // Validation
-    if (!username || !password) {
+    if (!identifier || !cleanPassword) {
       return res.status(400).json({ 
         success: false, 
-        message: "Please provide username and password" 
+        message: "Please provide username/email and password" 
       });
     }
 
-    // Find user
-    const user = findUserByUsername(username);
+    // Find user by username or email
+    const user = findUserByIdentifier(identifier);
     if (!user) {
       return res.status(401).json({ 
         success: false, 
-        message: "Invalid username or password" 
+        message: "Invalid username/email or password" 
+      });
+    }
+
+    if (!user.password) {
+      return res.status(401).json({
+        success: false,
+        message: `This account uses ${user.provider || 'Social'} login. Please sign in with social login.`
       });
     }
 
     // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(cleanPassword, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ 
         success: false, 
-        message: "Invalid username or password" 
+        message: "Invalid username/email or password" 
       });
     }
 
     // Generate JWT token
     const token = jwt.sign(
       { userId: user.id, username: user.username, userType: user.userType || 'student' },
-      JWT_SECRET,
+      getSecret(),
       { expiresIn: "7d" }
     );
 
@@ -129,13 +155,64 @@ router.post("/login", async (req, res) => {
         username: user.username,
         email: user.email,
         userType: user.userType || 'student',
+        avatarUrl: user.avatarUrl,
       },
     });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ 
       success: false, 
-      message: "Internal server error" 
+      message: "Internal server error during login" 
+    });
+  }
+});
+
+// Social Login endpoint (Google, GitHub, Facebook, LinkedIn)
+router.post("/social-login", async (req, res) => {
+  try {
+    const { provider, email, name, avatarUrl, userType } = req.body;
+
+    if (!provider) {
+      return res.status(400).json({
+        success: false,
+        message: "Provider is required for social login"
+      });
+    }
+
+    const user = saveOrUpdateSocialUser({ provider, email, name, avatarUrl, userType });
+
+    if (!user) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to process social login"
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, username: user.username, userType: user.userType || 'student' },
+      getSecret(),
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      success: true,
+      message: `${provider} authentication successful`,
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        userType: user.userType || 'student',
+        avatarUrl: user.avatarUrl,
+        provider: user.provider
+      },
+    });
+  } catch (error) {
+    console.error("Social login error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error during social login"
     });
   }
 });
@@ -143,7 +220,8 @@ router.post("/login", async (req, res) => {
 // Verify token endpoint
 router.get("/verify", (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
 
     if (!token) {
       return res.status(401).json({ 
@@ -152,8 +230,8 @@ router.get("/verify", (req, res) => {
       });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const user = findUserByUsername(decoded.username);
+    const decoded = jwt.verify(token, getSecret());
+    const user = findUserByIdentifier(decoded.username) || readUsers().find(u => u.id === decoded.userId);
 
     if (!user) {
       return res.status(401).json({ 
@@ -169,6 +247,7 @@ router.get("/verify", (req, res) => {
         username: user.username,
         email: user.email,
         userType: user.userType || 'student',
+        avatarUrl: user.avatarUrl,
       },
     });
   } catch (error) {
@@ -180,4 +259,3 @@ router.get("/verify", (req, res) => {
 });
 
 export default router;
-

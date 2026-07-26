@@ -2,17 +2,10 @@
 const getApiBaseUrl = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   if (apiUrl && apiUrl.trim()) {
-    // Remove trailing slash if present and trim whitespace
     const cleanUrl = apiUrl.trim().replace(/\/$/, '');
-    console.log('Using API URL:', cleanUrl);
     return `${cleanUrl}/api/auth`;
   }
-  // Fallback to localhost for development
-  const fallbackUrl = "http://localhost:3001/api/auth";
-  if (import.meta.env.MODE === 'production') {
-    console.warn('⚠️ VITE_API_URL is not set in production! Please configure it in Vercel environment variables.');
-  }
-  return fallbackUrl;
+  return "http://localhost:3001/api/auth";
 };
 
 const API_BASE_URL = getApiBaseUrl();
@@ -37,7 +30,7 @@ export const authService = {
       return data;
     } catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error(`Network error: Unable to connect to server. Please check if the backend is running at ${API_BASE_URL}`);
+        throw new Error(`Network error: Unable to connect to server at ${API_BASE_URL}. Is backend running?`);
       }
       throw error;
     }
@@ -62,7 +55,32 @@ export const authService = {
       return data;
     } catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error(`Network error: Unable to connect to server. Please check if the backend is running at ${API_BASE_URL}`);
+        throw new Error(`Network error: Unable to connect to server at ${API_BASE_URL}. Is backend running?`);
+      }
+      throw error;
+    }
+  },
+
+  async socialLogin({ provider, email, name, avatarUrl, userType = 'student' }) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/social-login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ provider, email, name, avatarUrl, userType }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || `${provider} login failed`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error(`Network error: Unable to connect to server at ${API_BASE_URL}`);
       }
       throw error;
     }
@@ -85,10 +103,9 @@ export const authService = {
       return data;
     } catch (error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error(`Network error: Unable to connect to server. Please check if the backend is running at ${API_BASE_URL}`);
+        throw new Error(`Network error: Unable to connect to server at ${API_BASE_URL}`);
       }
       throw error;
     }
   },
 };
-

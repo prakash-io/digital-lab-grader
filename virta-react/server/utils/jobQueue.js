@@ -12,11 +12,10 @@ try {
     maxRetriesPerRequest: null,
     enableReadyCheck: true,
     retryStrategy: (times) => {
-      if (times > 10) {
-        console.warn("Redis connection failed after 10 attempts. Job queue will not work without Redis.");
-        return null; // Stop retrying
+      if (times > 3) {
+        return null; // Stop retrying if Redis is not installed
       }
-      return Math.min(times * 200, 3000);
+      return 500;
     },
     reconnectOnError: (err) => {
       const targetError = "READONLY";
